@@ -1,16 +1,14 @@
 #ifndef RUBIKS_CUBE_H
 #define RUBIKS_CUBE_H
 
+#include <stdint.h>
+
 const int NUMBER_OF_FACES = 6;
 const int FACE_DIMENSION = 3;
 
 typedef struct face {
-    int color;
-    int facets[FACE_DIMENSION][FACE_DIMENSION];
-    struct face *adjacent_face_north;
-    struct face *adjacent_face_south;
-    struct face *adjacent_face_east;
-    struct face *adjacent_face_west;
+    uint8_t color;
+    uint8_t facets[FACE_DIMENSION][FACE_DIMENSION];
 } face;
 
 typedef struct {
@@ -18,22 +16,25 @@ typedef struct {
 } rubiks_cube;
 
 // Colors
-const int WHITE = 0;
-const int GREEN = 1;
-const int RED = 2;
-const int BLUE = 3;
-const int ORANGE = 4;
-const int YELLOW = 5;
+const uint8_t WHITE = 0;
+const uint8_t GREEN = 1;
+const uint8_t RED = 2;
+const uint8_t BLUE = 3;
+const uint8_t ORANGE = 4;
+const uint8_t YELLOW = 5;
+
+const uint8_t COLORS[NUMBER_OF_FACES] = {WHITE, GREEN, RED, BLUE, ORANGE, YELLOW};
 
 // Directions
 const int NUMBER_OF_DIRECTIONS = 4;
+
 const int NORTH = 0;
 const int SOUTH = 1;
 const int EAST = 2;
 const int WEST = 3;
 
 // Relative faces in order: north, south, east, west
-const int RELATIVE_FACES[NUMBER_OF_FACES][NUMBER_OF_DIRECTIONS] = {
+const uint8_t RELATIVE_FACES[NUMBER_OF_FACES][NUMBER_OF_DIRECTIONS] = {
     {ORANGE, RED, BLUE, GREEN},
     {WHITE, YELLOW, RED, ORANGE},
     {WHITE, YELLOW, BLUE, GREEN},
@@ -42,7 +43,7 @@ const int RELATIVE_FACES[NUMBER_OF_FACES][NUMBER_OF_DIRECTIONS] = {
     {RED, ORANGE, BLUE, GREEN}
 };
 
-// Facets
+// Facet locations
 const int CENTRE_FACET[] = {1, 1};
 const int NORTH_FACET[] = {0, 1};
 const int SOUTH_FACET[] = {2, 1};
