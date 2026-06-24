@@ -1,12 +1,13 @@
-#include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "rubiks_cube.h"
 
-const uint8_t COLORS[NUMBER_OF_FACES] = {WHITE, GREEN, RED, BLUE, ORANGE, YELLOW};
+const colors COLORS[NUMBER_OF_FACES] = {WHITE, GREEN, RED, BLUE, ORANGE, YELLOW};
 
 rubiks_cube * create_rubiks_cube(void) {
+    // Default orientation: Red face on front and White on top
+
     rubiks_cube *cube = malloc(sizeof(rubiks_cube));
     if (cube == NULL) {
         return NULL;
@@ -22,7 +23,7 @@ rubiks_cube * create_rubiks_cube(void) {
             return NULL;
         }
 
-        temp->color = i;
+        temp->color = COLORS[i];
         for (int j = 0; j < FACE_DIMENSION; j++) {
             for (int k = 0; k < FACE_DIMENSION; k++) {
                 temp->facets[j][k] = COLORS[i];

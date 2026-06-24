@@ -8,17 +8,16 @@ const int EAST = 2;
 const int WEST = 3;
 
 // Relative faces in order: north, south, east, west
-const uint8_t RELATIVE_FACES[NUMBER_OF_FACES][NUMBER_OF_DIRECTIONS] = {
-    {ORANGE, RED, BLUE, GREEN},
-    {WHITE, YELLOW, RED, ORANGE},
-    {WHITE, YELLOW, BLUE, GREEN},
-    {WHITE, YELLOW, ORANGE, RED},
-    {WHITE, YELLOW, GREEN, BLUE},
-    {RED, ORANGE, BLUE, GREEN}
+const face_positions RELATIVE_FACES[NUMBER_OF_FACES][NUMBER_OF_DIRECTIONS] = {
+    {BACK, FRONT, RIGHT, LEFT},
+    {UP, DOWN, FRONT, BACK},
+    {UP, DOWN, RIGHT, LEFT},
+    {UP, DOWN, BACK, FRONT},
+    {UP, DOWN, LEFT, RIGHT},
+    {FRONT, BACK, LEFT, RIGHT}
 };
 
 // Facet locations
-const int CENTRE_FACET[] = {1, 1};
 const int NORTH_FACET[] = {0, 1};
 const int SOUTH_FACET[] = {2, 1};
 const int EAST_FACET[] = {1, 2};
