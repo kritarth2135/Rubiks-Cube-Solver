@@ -1,7 +1,7 @@
 CC = clang
 CFLAGS = -Wall -Werror -std=c23 -g
 
-OBJECTS = main.o rubiks_cube.o
+OBJECTS = main.o rubiks_cube.o moves.o
 
 rubiks_cube_solver: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o rubiks_cube_solver
@@ -12,9 +12,9 @@ main.o: main.c
 rubiks_cube.o: rubiks_cube.c
 	$(CC) $(CFLAGS) -c rubiks_cube.c
 
-clean:
-	rm -f *.o
+moves.o: moves.c
+	$(CC) $(CFLAGS) -c moves.c
 
-clean_all:
+clean:
 	rm -f *.o
 	rm -f rubiks_cube_solver
