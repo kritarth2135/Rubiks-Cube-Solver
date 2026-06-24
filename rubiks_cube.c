@@ -1,4 +1,6 @@
+#include <inttypes.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "rubiks_cube.h"
 
@@ -56,7 +58,7 @@ rubiks_cube * create_rubiks_cube(void) {
         }
 
         temp->color = i;
-        for (int j = 0; i < FACE_DIMENSION; i++) {
+        for (int j = 0; j < FACE_DIMENSION; j++) {
             for (int k = 0; k < FACE_DIMENSION; k++) {
                 temp->facets[j][k] = COLORS[i];
             }
@@ -74,4 +76,29 @@ void free_rubiks_cube(rubiks_cube *cube) {
     }
     free(cube);
     return;
+}
+
+void print_cube(rubiks_cube *cube) {
+    for (int i = 0; i < FACE_DIMENSION; i++) {
+        printf("      ");
+        for (int j = 0; j < FACE_DIMENSION; j++) {
+            printf("%i ", cube->faces[0]->facets[i][j]);
+        }
+        printf("\n");
+    }
+    for (int j = 0; j < FACE_DIMENSION; j++) {
+        for (int i = 1; i < 5; i++) {
+            for (int k = 0; k < FACE_DIMENSION; k++) {
+                printf("%i ", cube->faces[i]->facets[j][k]);
+            }
+        }
+        printf("\n");
+    }
+    for (int i = 0; i < FACE_DIMENSION; i++) {
+        printf("      ");
+        for (int j = 0; j < FACE_DIMENSION; j++) {
+            printf("%i ", cube->faces[5]->facets[i][j]);
+        }
+        printf("\n");
+    }
 }

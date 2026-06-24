@@ -20,4 +20,6 @@ rubiks_cube * create_rubiks_cube(void);
 
 void free_rubiks_cube(rubiks_cube *cube);
 
+void print_cube(rubiks_cube *cube);
+
 #endif
