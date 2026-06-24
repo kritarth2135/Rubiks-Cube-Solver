@@ -16,6 +16,15 @@ typedef struct {
     face *faces[NUMBER_OF_FACES];
 } rubiks_cube;
 
+typedef enum {
+    WHITE,
+    GREEN,
+    RED,
+    BLUE,
+    ORANGE,
+    YELLOW
+} Color;
+
 rubiks_cube * create_rubiks_cube(void);
 
 void free_rubiks_cube(rubiks_cube *cube);
