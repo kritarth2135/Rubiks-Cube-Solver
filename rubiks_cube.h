@@ -22,4 +22,6 @@ void free_rubiks_cube(rubiks_cube *cube);
 
 void print_cube(rubiks_cube *cube);
 
+void make_move(rubiks_cube* cube, char* move);
+
 #endif
