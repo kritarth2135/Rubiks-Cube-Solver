@@ -3,70 +3,49 @@
 
 #include "rubiks_cube.h"
 
-const colors COLORS[NUMBER_OF_FACES] = {WHITE, GREEN, RED, BLUE, ORANGE, YELLOW};
+const CornerCubie solved_corner_positions[NUMBER_OF_CORNERS] = {
+    UFL, UFR, UBL, UBR,
+    DFL, DFR, DBL, DBR
+};
 
-rubiks_cube * create_rubiks_cube(void) {
+const CornerOrientation solved_corner_orientaitons[NUMBER_OF_CORNERS] = {
+    NO_TWIST, NO_TWIST, NO_TWIST, NO_TWIST,
+    NO_TWIST, NO_TWIST, NO_TWIST, NO_TWIST
+};
+
+const EdgeCubie solved_edges_positions[NUMBER_OF_EDGES] = {
+    UF, UL, UB, UR,
+    FL, FR, BL, BR,
+    DF, DL, DB, DR
+};
+
+const EdgeOrientation solved_edges_orientations[NUMBER_OF_EDGES] = {
+    SOLVED, SOLVED, SOLVED, SOLVED,
+    SOLVED, SOLVED, SOLVED, SOLVED,
+    SOLVED, SOLVED, SOLVED, SOLVED
+};
+
+RubiksCube * create_rubiks_cube(void) {
     // Default orientation: Red face on front and White on top
 
-    rubiks_cube *cube = malloc(sizeof(rubiks_cube));
+    RubiksCube *cube = malloc(sizeof(RubiksCube));
     if (cube == NULL) {
         return NULL;
     }
 
-    for (int i = 0; i < NUMBER_OF_FACES; i++) {
-        face *temp = malloc(sizeof(face));
-        if (temp == NULL) {
-            for (int j = i - 1; j >= 0; j--) {
-                free(cube->faces[i]);
-            }
-            free(cube);
-            return NULL;
-        }
+    for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
+        cube->corner_positions[i] = solved_corner_positions[i];
+        cube->corner_orientations[i] = solved_corner_orientaitons[i];
+    }
 
-        temp->color = COLORS[i];
-        for (int j = 0; j < FACE_DIMENSION; j++) {
-            for (int k = 0; k < FACE_DIMENSION; k++) {
-                temp->facets[j][k] = COLORS[i];
-            }
-        }
-
-        cube->faces[i] = temp;
+    for (int i = 0; i < NUMBER_OF_EDGES; i++) {
+        cube->edge_positions[i] = solved_edges_positions[i];
+        cube->edge_orientations[i] = solved_edges_orientations[i];
     }
 
     return cube;
 }
 
-void free_rubiks_cube(rubiks_cube *cube) {
-    for (int i = 0; i < NUMBER_OF_FACES; i++) {
-        free(cube->faces[i]);
-    }
-    free(cube);
-    return;
-}
-
-void print_cube(rubiks_cube *cube) {
-    char color_char[] = {'W', 'G', 'R', 'B', 'O', 'Y'};
-
-    for (int i = 0; i < FACE_DIMENSION; i++) {
-        printf("      ");
-        for (int j = 0; j < FACE_DIMENSION; j++) {
-            printf("%c ", color_char[cube->faces[0]->facets[i][j]]);
-        }
-        printf("\n");
-    }
-    for (int j = 0; j < FACE_DIMENSION; j++) {
-        for (int i = 1; i < 5; i++) {
-            for (int k = 0; k < FACE_DIMENSION; k++) {
-                printf("%c ", color_char[cube->faces[i]->facets[j][k]]);
-            }
-        }
-        printf("\n");
-    }
-    for (int i = 0; i < FACE_DIMENSION; i++) {
-        printf("      ");
-        for (int j = 0; j < FACE_DIMENSION; j++) {
-            printf("%c ", color_char[cube->faces[5]->facets[i][j]]);
-        }
-        printf("\n");
-    }
+void print_cube(RubiksCube *cube) {
+    printf("cube");
 }
