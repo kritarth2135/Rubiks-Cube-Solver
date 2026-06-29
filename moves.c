@@ -13,22 +13,22 @@ const char* ALL_POSSIBLE_MOVES[] = {
     "x", "y", "z"
 };
 
-void U(RubiksCube* cube, bool prime, bool two) {
+void Un(RubiksCube* cube, bool prime, bool two) {
 }
 
-void D(RubiksCube* cube, bool prime, bool two) {
+void Dn(RubiksCube* cube, bool prime, bool two) {
 }
 
-void R(RubiksCube* cube, bool prime, bool two) {
+void Rn(RubiksCube* cube, bool prime, bool two) {
 }
 
-void L(RubiksCube* cube, bool prime, bool two) {
+void Ln(RubiksCube* cube, bool prime, bool two) {
 }
 
-void F(RubiksCube* cube, bool prime, bool two) {
+void Fn(RubiksCube* cube, bool prime, bool two) {
 }
 
-void B(RubiksCube* cube, bool prime, bool two) {
+void Bn(RubiksCube* cube, bool prime, bool two) {
 }
 
 void Uw(RubiksCube* cube, bool prime, bool two) {

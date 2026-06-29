@@ -1,8 +1,12 @@
 #ifndef RUBIKS_CUBE_H
 #define RUBIKS_CUBE_H
 
+#define NUMBER_OF_COLORS 6
 #define NUMBER_OF_CORNERS 8
 #define NUMBER_OF_EDGES 12
+
+#define CORNER_STICKERS 3
+#define EDGE_STICKERS 2
 
 typedef enum {
     WHITE,
@@ -12,6 +16,24 @@ typedef enum {
     ORANGE,
     YELLOW
 } Color;
+
+typedef enum {
+    UP,
+    LEFT,
+    FRONT,
+    RIGHT,
+    BACK,
+    DOWN
+} Position;
+
+typedef enum {
+    W = 'W',
+    G = 'G',
+    R = 'R',
+    B = 'B',
+    O = 'O',
+    Y = 'Y',
+} Sticker;
 
 // Location specified by abbrevation of face positions (Up, Down, Left, Right, Front, Back)
 // These are ordered according to the solved state of a cube
@@ -38,20 +60,20 @@ typedef enum {
 } EdgeOrientation;
 
 typedef struct {
+    Color centres[NUMBER_OF_COLORS];
     CornerCubie corner_positions[NUMBER_OF_CORNERS];
     CornerOrientation corner_orientations[NUMBER_OF_CORNERS];
     EdgeCubie edge_positions[NUMBER_OF_EDGES];
     EdgeOrientation edge_orientations[NUMBER_OF_EDGES];
 } RubiksCube;
 
+extern const Color solved_centre_pattern[NUMBER_OF_COLORS];
 extern const CornerCubie solved_corner_positions[NUMBER_OF_CORNERS];
 extern const CornerOrientation solved_corner_orientaitons[NUMBER_OF_CORNERS];
 extern const EdgeCubie solved_edges_positions[NUMBER_OF_EDGES];
 extern const EdgeOrientation solved_edges_orientations[NUMBER_OF_EDGES];
 
 RubiksCube * create_rubiks_cube(void);
-
-void free_rubiks_cube(RubiksCube *cube);
 
 void print_cube(RubiksCube *cube);
 
