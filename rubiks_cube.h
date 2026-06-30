@@ -5,8 +5,8 @@
 #define NUMBER_OF_CORNERS 8
 #define NUMBER_OF_EDGES 12
 
-#define CORNER_STICKERS 3
-#define EDGE_STICKERS 2
+#define NUMBER_OF_CORNER_STICKERS 3
+#define NUMBER_OF_EDGE_STICKERS 2
 
 typedef enum {
     WHITE,
@@ -35,6 +35,17 @@ typedef enum {
     Y = 'Y',
 } Sticker;
 
+typedef enum {
+    CORNER_TOP,
+    CORNER_RIGHT,
+    CORNER_LEFT
+} CornerStickerPosition;
+
+typedef enum {
+    EDGE_TOP,
+    EDGE_DOWN,
+} EdgeStickerPosition;
+
 // Location specified by abbrevation of face positions (Up, Down, Left, Right, Front, Back)
 // These are ordered according to the solved state of a cube
 typedef enum {
@@ -44,14 +55,14 @@ typedef enum {
 
 typedef enum {
     UF, UL, UB, UR,
-    FL, FR, BL, BR,
+    FL, BL, BR, FR,
     DF, DL, DB, DR
 } EdgeCubie;
 
 typedef enum {
     NO_TWIST,
-    TWISTED_RIGHT,
-    TWISTED_LEFT
+    TWISTED_LEFT,
+    TWISTED_RIGHT
 } CornerOrientation;
 
 typedef enum {
