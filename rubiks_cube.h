@@ -1,9 +1,12 @@
 #ifndef RUBIKS_CUBE_H
 #define RUBIKS_CUBE_H
 
-#define NUMBER_OF_FACES 6
-#define FACE_DIMENSION 3
-#define NUMBER_OF_DIRECTIONS 4
+#define NUMBER_OF_COLORS 6
+#define NUMBER_OF_CORNERS 8
+#define NUMBER_OF_EDGES 12
+
+#define NUMBER_OF_CORNER_STICKERS 3
+#define NUMBER_OF_EDGE_STICKERS 2
 
 typedef enum {
     WHITE,
@@ -12,7 +15,7 @@ typedef enum {
     BLUE,
     ORANGE,
     YELLOW
-} colors;
+} Color;
 
 typedef enum {
     UP,
@@ -21,23 +24,70 @@ typedef enum {
     RIGHT,
     BACK,
     DOWN
-} face_positions;
+} Position;
 
-typedef struct face {
-    colors color;
-    colors facets[FACE_DIMENSION][FACE_DIMENSION];
-} face;
+typedef enum {
+    W = 'W',
+    G = 'G',
+    R = 'R',
+    B = 'B',
+    O = 'O',
+    Y = 'Y',
+} Sticker;
+
+typedef enum {
+    CORNER_TOP,
+    CORNER_RIGHT,
+    CORNER_LEFT
+} CornerStickerPosition;
+
+typedef enum {
+    EDGE_TOP,
+    EDGE_DOWN,
+} EdgeStickerPosition;
+
+// Location specified by abbrevation of face positions (Up, Down, Left, Right, Front, Back)
+// These are ordered according to the solved state of a cube
+typedef enum {
+    UFL, UFR, UBL, UBR,
+    DFL, DFR, DBL, DBR
+} CornerCubie;
+
+typedef enum {
+    UF, UL, UB, UR,
+    FL, BL, BR, FR,
+    DF, DL, DB, DR
+} EdgeCubie;
+
+typedef enum {
+    NO_TWIST,
+    TWISTED_LEFT,
+    TWISTED_RIGHT
+} CornerOrientation;
+
+typedef enum {
+    SOLVED,
+    FLIPPED
+} EdgeOrientation;
 
 typedef struct {
-    face *faces[NUMBER_OF_FACES];
-} rubiks_cube;
+    Color centres[NUMBER_OF_COLORS];
+    CornerCubie corner_positions[NUMBER_OF_CORNERS];
+    CornerOrientation corner_orientations[NUMBER_OF_CORNERS];
+    EdgeCubie edge_positions[NUMBER_OF_EDGES];
+    EdgeOrientation edge_orientations[NUMBER_OF_EDGES];
+} RubiksCube;
 
-rubiks_cube * create_rubiks_cube(void);
+extern const Color solved_centre_pattern[NUMBER_OF_COLORS];
+extern const CornerCubie solved_corner_positions[NUMBER_OF_CORNERS];
+extern const CornerOrientation solved_corner_orientaitons[NUMBER_OF_CORNERS];
+extern const EdgeCubie solved_edges_positions[NUMBER_OF_EDGES];
+extern const EdgeOrientation solved_edges_orientations[NUMBER_OF_EDGES];
 
-void free_rubiks_cube(rubiks_cube *cube);
+RubiksCube * create_rubiks_cube(void);
 
-void print_cube(rubiks_cube *cube);
+void print_cube(RubiksCube *cube);
 
-void make_move(rubiks_cube* cube, char* move);
+void make_move(RubiksCube* cube, char* move);
 
 #endif
