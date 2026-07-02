@@ -198,6 +198,30 @@ void l_prime(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, UL, FL, DL, BL);
 }
 
+void f_normal(RubiksCube *cube) {
+    CornerOrientation twists[] = {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST};
+    cycle_four_corners_with_twists(cube, UFL, DFL, DFR, UFR, twists);
+    cycle_four_edges_without_flipping(cube, UF, FL, DF, FR);
+}
+
+void f_prime(RubiksCube *cube) {
+    CornerOrientation twists[] = {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST};
+    cycle_four_corners_with_twists(cube, UFL, UFR, DFR, DFL, twists);
+    cycle_four_edges_without_flipping(cube, UF, FR, DF, FL);
+}
+
+void b_normal(RubiksCube *cube) {
+    CornerOrientation twists[] = {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST};
+    cycle_four_corners_with_twists(cube, UBL, UBR, DBR, DBL, twists);
+    cycle_four_edges_without_flipping(cube, UB, BR, DB, BL);
+}
+
+void b_prime(RubiksCube *cube) {
+    CornerOrientation twists[] = {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST};
+    cycle_four_corners_with_twists(cube, UBL, DBL, DBR, UBR, twists);
+    cycle_four_edges_without_flipping(cube, UB, BL, DB, BR);
+}
+
 void m_normal(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, UF, UB, DB, DF);
     cycle_four_centres(cube, FRONT, UP, BACK, DOWN);
@@ -332,6 +356,56 @@ void make_move(RubiksCube* cube, char* move_str) {
             m_normal(cube);
             break;
 
+        case F_NORMAL:
+            f_normal(cube);
+            break;
+        case F_PRIME:
+            f_prime(cube);
+            break;
+        case F_TWO:
+            f_normal(cube);
+            f_normal(cube);
+            break;
+        case F_WIDE_NORMAL:
+            f_normal(cube);
+            s_normal(cube);
+            break;
+        case F_WIDE_PRIME:
+            f_prime(cube);
+            s_prime(cube);
+            break;
+        case F_WIDE_TWO:
+            f_normal(cube);
+            f_normal(cube);
+            s_normal(cube);
+            s_normal(cube);
+            break;
+
+        case B_NORMAL:
+            b_normal(cube);
+            break;
+        case B_PRIME:
+            b_prime(cube);
+            break;
+        case B_TWO:
+            b_normal(cube);
+            b_normal(cube);
+            break;
+        case B_WIDE_NORMAL:
+            b_normal(cube);
+            s_prime(cube);
+            break;
+        case B_WIDE_PRIME:
+            b_prime(cube);
+            s_normal(cube);
+            break;
+        case B_WIDE_TWO:
+            b_normal(cube);
+            b_normal(cube);
+            s_normal(cube);
+            s_normal(cube);
+            break;
+
         case M_NORMAL:
             m_normal(cube);
             break;
@@ -363,6 +437,63 @@ void make_move(RubiksCube* cube, char* move_str) {
         case S_TWO:
             s_normal(cube);
             s_normal(cube);
+            break;
+
+        case x_NORMAL:
+            l_prime(cube);
+            m_prime(cube);
+            r_normal(cube);
+            break;
+        case x_PRIME:
+            l_normal(cube);
+            m_normal(cube);
+            r_prime(cube);
+            break;
+        case x_TWO:
+            l_normal(cube);
+            l_normal(cube);
+            m_normal(cube);
+            m_normal(cube);
+            r_normal(cube);
+            r_normal(cube);
+            break;
+
+        case y_NORMAL:
+            u_normal(cube);
+            e_prime(cube);
+            d_prime(cube);
+            break;
+        case y_PRIME:
+            u_prime(cube);
+            e_normal(cube);
+            d_normal(cube);
+            break;
+        case y_TWO:
+            u_normal(cube);
+            u_normal(cube);
+            e_normal(cube);
+            e_normal(cube);
+            d_normal(cube);
+            d_normal(cube);
+            break;
+
+        case z_NORMAL:
+            f_normal(cube);
+            s_normal(cube);
+            b_prime(cube);
+            break;
+        case z_PRIME:
+            f_prime(cube);
+            s_prime(cube);
+            b_normal(cube);
+            break;
+        case z_TWO:
+            f_normal(cube);
+            f_normal(cube);
+            s_normal(cube);
+            s_normal(cube);
+            b_normal(cube);
+            b_normal(cube);
             break;
 
         default:
