@@ -179,6 +179,16 @@ void d_prime(RubiksCube *cube) {
     cycle_four_edges_without_flipping(cube, DF, DR, DB, DL);
 }
 
+void m_normal(RubiksCube *cube) {
+    cycle_four_edges_with_flipping(cube, UF, UB, DB, DF);
+    cycle_four_centres(cube, FRONT, UP, BACK, DOWN);
+}
+
+void m_prime(RubiksCube *cube) {
+    cycle_four_edges_with_flipping(cube, UF, DF, DB, UB);
+    cycle_four_centres(cube, FRONT, DOWN, BACK, UP);
+}
+
 void e_normal(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, FL, BL, BR, FR);
     cycle_four_centres(cube, FRONT, LEFT, BACK, RIGHT);
@@ -187,6 +197,16 @@ void e_normal(RubiksCube *cube) {
 void e_prime(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, FL, FR, BR, BL);
     cycle_four_centres(cube, FRONT, RIGHT, BACK, LEFT);
+}
+
+void s_normal(RubiksCube *cube) {
+    cycle_four_edges_with_flipping(cube, UL, DL, DR, UR);
+    cycle_four_centres(cube, UP, LEFT, DOWN, RIGHT);
+}
+
+void s_prime(RubiksCube *cube) {
+    cycle_four_edges_with_flipping(cube, UL, UR, DR, DL);
+    cycle_four_centres(cube, UP, RIGHT, DOWN, LEFT);
 }
 
 void make_move(RubiksCube* cube, char* move_str) {
@@ -217,6 +237,7 @@ void make_move(RubiksCube* cube, char* move_str) {
             e_normal(cube);
             e_normal(cube);
             break;
+
         case D_NORMAL:
             d_normal(cube);
             break;
@@ -241,6 +262,18 @@ void make_move(RubiksCube* cube, char* move_str) {
             e_normal(cube);
             e_normal(cube);
             break;
+
+        case M_NORMAL:
+            m_normal(cube);
+            break;
+        case M_PRIME:
+            m_prime(cube);
+            break;
+        case M_TWO:
+            m_normal(cube);
+            m_normal(cube);
+            break;
+
         case E_NORMAL:
             e_normal(cube);
             break;
@@ -251,6 +284,18 @@ void make_move(RubiksCube* cube, char* move_str) {
             e_normal(cube);
             e_normal(cube);
             break;
+
+        case S_NORMAL:
+            s_normal(cube);
+            break;
+        case S_PRIME:
+            s_prime(cube);
+            break;
+        case S_TWO:
+            s_normal(cube);
+            s_normal(cube);
+            break;
+
         default:
             printf("Invalid move!\n");
             break;
