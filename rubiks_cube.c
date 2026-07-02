@@ -35,12 +35,12 @@ const Sticker CENTRE_STICKERS[NUMBER_OF_COLORS] = {
     W, G, R, B, O, Y
 };
 
-const Sticker CORNER_CUBIE_STICKERS[NUMBER_OF_CORNERS][NUMBER_OF_CORNER_STICKERS] = {
+const Sticker CORNER_CUBIE_STICKERS[NUMBER_OF_CORNERS][CORNER_SIDES] = {
     {W, R, G}, {W, B, R}, {W, G, O}, {W, O, B},
     {Y, G, R}, {Y, R, B}, {Y, O, G}, {Y, B, O}
 };
 
-const Sticker EDGE_CUBIE_STICKERS[NUMBER_OF_EDGES][NUMBER_OF_EDGE_STICKERS] = {
+const Sticker EDGE_CUBIE_STICKERS[NUMBER_OF_EDGES][EDGE_SIDES] = {
     {W, R}, {W, G}, {W, O}, {W, B},
     {G, R}, {G, O}, {B, O}, {B, R},
     {Y, R}, {Y, G}, {Y, O}, {Y, B}
@@ -72,11 +72,11 @@ RubiksCube * create_rubiks_cube(void) {
 }
 
 Sticker get_corner_sticker(RubiksCube *cube, CornerCubie cubie, CornerStickerPosition position) {
-    return CORNER_CUBIE_STICKERS[cube->corner_positions[cubie]][(position + cube->corner_orientations[cubie]) % NUMBER_OF_CORNER_STICKERS];
+    return CORNER_CUBIE_STICKERS[cube->corner_positions[cubie]][(position + cube->corner_orientations[cubie]) % CORNER_SIDES];
 }
 
 Sticker get_edge_sticker(RubiksCube *cube, EdgeCubie cubie, EdgeStickerPosition position) {
-    return EDGE_CUBIE_STICKERS[cube->edge_positions[cubie]][(position + cube->edge_orientations[cubie]) % NUMBER_OF_EDGE_STICKERS];
+    return EDGE_CUBIE_STICKERS[cube->edge_positions[cubie]][(position + cube->edge_orientations[cubie]) % EDGE_SIDES];
 }
 
 // Using the cubie representation to get all the facets

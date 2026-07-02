@@ -5,8 +5,8 @@
 #define NUMBER_OF_CORNERS 8
 #define NUMBER_OF_EDGES 12
 
-#define NUMBER_OF_CORNER_STICKERS 3
-#define NUMBER_OF_EDGE_STICKERS 2
+#define CORNER_SIDES 3
+#define EDGE_SIDES 2
 
 typedef enum {
     WHITE,
@@ -61,8 +61,8 @@ typedef enum {
 
 typedef enum {
     NO_TWIST,
-    TWISTED_LEFT,
-    TWISTED_RIGHT
+    LEFT_TWIST,
+    RIGHT_TWIST
 } CornerOrientation;
 
 typedef enum {
