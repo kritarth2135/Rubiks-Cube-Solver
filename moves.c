@@ -116,98 +116,77 @@ CornerOrientation twist_corner_left(CornerOrientation orientation) {
         return NO_TWIST;
 }
 
-void u_normal(RubiksCube *cube) {
-    CornerCubie temp_corner = cube->corner_positions[UFL];
-    cube->corner_positions[UFL] = cube->corner_positions[UFR];
-    cube->corner_positions[UFR] = cube->corner_positions[UBR];
-    cube->corner_positions[UBR] = cube->corner_positions[UBL];
-    cube->corner_positions[UBL] = temp_corner;
+// c1 is replaced with c2, c3 with c3 and so on
+void cycle_four_corners(RubiksCube *cube, CornerCubie c1, CornerCubie c2, CornerCubie c3, CornerCubie c4) {
+    CornerCubie temp_corner_position = cube->corner_positions[c1];
+    CornerOrientation temp_corner_orientation = cube->corner_orientations[c1];
+    cube->corner_positions[c1] = cube->corner_positions[c2];
+    cube->corner_orientations[c1] = cube->corner_orientations[c2];
+    cube->corner_positions[c2] = cube->corner_positions[c3];
+    cube->corner_orientations[c2] = cube->corner_orientations[c3];
+    cube->corner_positions[c3] = cube->corner_positions[c4];
+    cube->corner_orientations[c3] = cube->corner_orientations[c4];
+    cube->corner_positions[c4] = temp_corner_position;
+    cube->corner_orientations[c4] = temp_corner_orientation;
+}
 
-    EdgeCubie temp_edge = cube->edge_positions[UF];
-    cube->edge_positions[UF] = cube->edge_positions[UR];
-    cube->edge_positions[UR] = cube->edge_positions[UB];
-    cube->edge_positions[UB] = cube->edge_positions[UL];
-    cube->edge_positions[UL] = temp_edge;
+void cycle_four_edges_without_flipping(RubiksCube *cube, EdgeCubie c1, EdgeCubie c2, EdgeCubie c3, EdgeCubie c4) {
+    EdgeCubie temp_cubie_position = cube->edge_positions[c1];
+    EdgeOrientation temp_cubie_orientation = cube->edge_orientations[c1];
+    cube->edge_positions[c1] = cube->edge_positions[c2];
+    cube->edge_orientations[c1] = cube->edge_orientations[c2];
+    cube->edge_positions[c2] = cube->edge_positions[c3];
+    cube->edge_orientations[c2] = cube->edge_orientations[c3];
+    cube->edge_positions[c3] = cube->edge_positions[c4];
+    cube->edge_orientations[c3] = cube->edge_orientations[c4];
+    cube->edge_positions[c4] = temp_cubie_position;
+    cube->edge_orientations[c4] = temp_cubie_orientation;
+}
+
+void cycle_four_edges_with_flipping(RubiksCube *cube, EdgeCubie c1, EdgeCubie c2, EdgeCubie c3, EdgeCubie c4) {
+    cycle_four_edges_without_flipping(cube, c1, c2, c3, c4);
+    cube->edge_orientations[c1] = flip_edge(cube->edge_orientations[c1]);
+    cube->edge_orientations[c2] = flip_edge(cube->edge_orientations[c2]);
+    cube->edge_orientations[c3] = flip_edge(cube->edge_orientations[c3]);
+    cube->edge_orientations[c4] = flip_edge(cube->edge_orientations[c4]);
+}
+
+void cycle_four_centres(RubiksCube *cube, Position c1, Position c2, Position c3, Position c4) {
+    Color temp_center = cube->centres[c1];
+    cube->centres[c1] = cube->centres[c2];
+    cube->centres[c2] = cube->centres[c3];
+    cube->centres[c3] = cube->centres[c4];
+    cube->centres[c4] = temp_center;
+}
+
+void u_normal(RubiksCube *cube) {
+    cycle_four_corners(cube, UFL, UFR, UBR, UBL);
+    cycle_four_edges_without_flipping(cube, UF, UR, UB, UL);
 }
 
 void u_prime(RubiksCube *cube) {
-    CornerCubie temp_corner = cube->corner_positions[UFL];
-    cube->corner_positions[UFL] = cube->corner_positions[UBL];
-    cube->corner_positions[UBL] = cube->corner_positions[UBR];
-    cube->corner_positions[UBR] = cube->corner_positions[UFR];
-    cube->corner_positions[UFR] = temp_corner;
-
-    EdgeCubie temp_edge = cube->edge_positions[UF];
-    cube->edge_positions[UF] = cube->edge_positions[UL];
-    cube->edge_positions[UL] = cube->edge_positions[UB];
-    cube->edge_positions[UB] = cube->edge_positions[UR];
-    cube->edge_positions[UR] = temp_edge;
+    cycle_four_corners(cube, UFL, UBL, UBR, UFR);
+    cycle_four_edges_without_flipping(cube, UF, UL, UB, UR);
 }
 
 void d_normal(RubiksCube *cube) {
-    CornerCubie temp_corner = cube->corner_positions[DFL];
-    cube->corner_positions[DFL] = cube->corner_positions[DBL];
-    cube->corner_positions[DBL] = cube->corner_positions[DBR];
-    cube->corner_positions[DBR] = cube->corner_positions[DFR];
-    cube->corner_positions[DFR] = temp_corner;
-
-    EdgeCubie temp_edge = cube->edge_positions[DF];
-    cube->edge_positions[DF] = cube->edge_positions[DL];
-    cube->edge_positions[DL] = cube->edge_positions[DB];
-    cube->edge_positions[DB] = cube->edge_positions[DR];
-    cube->edge_positions[DR] = temp_edge;
+    cycle_four_corners(cube, DFL, DBL, DBR, DFR);
+    cycle_four_edges_without_flipping(cube, DF, DL, DB, DR);
 }
 
 void d_prime(RubiksCube *cube) {
-    CornerCubie temp_corner = cube->corner_positions[DFL];
-    cube->corner_positions[DFL] = cube->corner_positions[DFR];
-    cube->corner_positions[DFR] = cube->corner_positions[DBR];
-    cube->corner_positions[DBR] = cube->corner_positions[DBL];
-    cube->corner_positions[DBL] = temp_corner;
-
-    EdgeCubie temp_edge = cube->edge_positions[DF];
-    cube->edge_positions[DF] = cube->edge_positions[DR];
-    cube->edge_positions[DR] = cube->edge_positions[DB];
-    cube->edge_positions[DB] = cube->edge_positions[DL];
-    cube->edge_positions[DL] = temp_edge;
+    cycle_four_corners(cube, DFL, DFR, DBR, DBL);
+    cycle_four_edges_without_flipping(cube, DF, DR, DB, DL);
 }
 
 void e_normal(RubiksCube *cube) {
-    EdgeCubie temp_cubie_position = cube->edge_positions[FL];
-    EdgeOrientation temp_cubie_orientation = cube->edge_orientations[FL];
-    cube->edge_positions[FL] = cube->edge_positions[BL];
-    cube->edge_orientations[FL] = flip_edge(cube->edge_orientations[BL]);
-    cube->edge_positions[BL] = cube->edge_positions[BR];
-    cube->edge_orientations[BL] = flip_edge(cube->edge_orientations[BR]);
-    cube->edge_positions[BR] = cube->edge_positions[FR];
-    cube->edge_orientations[BR] = flip_edge(cube->edge_orientations[FR]);
-    cube->edge_positions[FR] = temp_cubie_position;
-    cube->edge_orientations[FR] = flip_edge(temp_cubie_orientation);
-
-    Color temp_center = cube->centres[FRONT];
-    cube->centres[FRONT] = cube->centres[LEFT];
-    cube->centres[LEFT] = cube->centres[BACK];
-    cube->centres[BACK] = cube->centres[RIGHT];
-    cube->centres[RIGHT] = temp_center;
+    cycle_four_edges_with_flipping(cube, FL, BL, BR, FR);
+    cycle_four_centres(cube, FRONT, LEFT, BACK, RIGHT);
 }
 
 void e_prime(RubiksCube *cube) {
-    EdgeCubie temp_cubie_position = cube->edge_positions[FL];
-    EdgeOrientation temp_cubie_orientation = cube->edge_orientations[FL];
-    cube->edge_positions[FL] = cube->edge_positions[FR];
-    cube->edge_orientations[FL] = flip_edge(cube->edge_orientations[FR]);
-    cube->edge_positions[FR] = cube->edge_positions[BR];
-    cube->edge_orientations[FR] = flip_edge(cube->edge_orientations[BR]);
-    cube->edge_positions[BR] = cube->edge_positions[BL];
-    cube->edge_orientations[BR] = flip_edge(cube->edge_orientations[BL]);
-    cube->edge_positions[BL] = temp_cubie_position;
-    cube->edge_orientations[BL] = flip_edge(temp_cubie_orientation);
-
-    Color temp_center = cube->centres[FRONT];
-    cube->centres[FRONT] = cube->centres[RIGHT];
-    cube->centres[RIGHT] = cube->centres[BACK];
-    cube->centres[BACK] = cube->centres[LEFT];
-    cube->centres[LEFT] = temp_center;
+    cycle_four_edges_with_flipping(cube, FL, FR, BR, BL);
+    cycle_four_centres(cube, FRONT, RIGHT, BACK, LEFT);
 }
 
 void make_move(RubiksCube* cube, char* move_str) {
@@ -267,6 +246,10 @@ void make_move(RubiksCube* cube, char* move_str) {
             break;
         case E_PRIME:
             e_prime(cube);
+            break;
+        case E_TWO:
+            e_normal(cube);
+            e_normal(cube);
             break;
         default:
             printf("Invalid move!\n");
