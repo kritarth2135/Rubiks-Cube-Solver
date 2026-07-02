@@ -98,7 +98,7 @@ EdgeOrientation flip_edge(EdgeOrientation orientation) {
 }
 
 CornerOrientation twist_corner(CornerOrientation orientation, CornerOrientation twist) {
-    return orientation += twist % CORNER_SIDES;
+    return (orientation + twist) % CORNER_SIDES;
 }
 
 // c1 is replaced with c2, c3 with c3 and so on
