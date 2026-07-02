@@ -1,4 +1,3 @@
-// #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -18,10 +17,10 @@ int main(void) {
     print_cube(cube);
     while (1) {
         printf("Enter move ('q' to exit): ");
-        if (buffer[0] == 'q') {
+        get_input(buffer);
+        if (buffer[0] == 'q' && buffer[1] == '\0') {
             break;
         }
-        get_input(buffer);
         make_move(cube, buffer);
         print_cube(cube);
     }
@@ -33,7 +32,7 @@ int main(void) {
 void get_input(char buffer[BUFFER_SIZE]) {
     int idx = 0;
     char ch;
-    while ((ch = getchar()) != '\n' && ch != EOF) {
+    while ((ch = getchar()) != '\n' && ch != EOF && idx < BUFFER_SIZE - 1) {
         buffer[idx] = ch;
         idx++;
     }
