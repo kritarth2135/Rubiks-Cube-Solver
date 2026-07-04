@@ -68,6 +68,6 @@ RubiksCube * create_rubiks_cube(void);
 
 void print_cube(RubiksCube *cube);
 
-void make_move(RubiksCube* cube, char* move);
+int make_move(RubiksCube* cube, char *move);
 
 #endif

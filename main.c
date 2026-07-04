@@ -21,7 +21,9 @@ int main(void) {
         if (buffer[0] == 'q' && buffer[1] == '\0') {
             break;
         }
-        make_move(cube, buffer);
+        if (make_move(cube, buffer) != 0) {
+            printf("Invalid move!\n");
+        }
         print_cube(cube);
     }
 
