@@ -116,7 +116,7 @@ void cycle_four_corners(RubiksCube *cube, CornerCubie c1, CornerCubie c2, Corner
 }
 
 void cycle_four_corners_with_twists (
-    RubiksCube *cube, CornerCubie c1, CornerCubie c2, CornerCubie c3, CornerCubie c4, CornerOrientation twists[4]
+    RubiksCube *cube, CornerCubie c1, CornerCubie c2, CornerCubie c3, CornerCubie c4, const CornerOrientation twists[4]
 ) {
     cycle_four_corners(cube, c1, c2, c3, c4);
     cube->corner_orientations[c2] = twist_corner(cube->corner_orientations[c2], twists[0]);
@@ -158,7 +158,6 @@ void u_normal(RubiksCube *cube) {
     cycle_four_corners(cube, UFL, UFR, UBR, UBL);
     cycle_four_edges_without_flipping(cube, UF, UR, UB, UL);
 }
-
 void u_prime(RubiksCube *cube) {
     cycle_four_corners(cube, UFL, UBL, UBR, UFR);
     cycle_four_edges_without_flipping(cube, UF, UL, UB, UR);
@@ -168,57 +167,52 @@ void d_normal(RubiksCube *cube) {
     cycle_four_corners(cube, DFL, DBL, DBR, DFR);
     cycle_four_edges_without_flipping(cube, DF, DL, DB, DR);
 }
-
 void d_prime(RubiksCube *cube) {
     cycle_four_corners(cube, DFL, DFR, DBR, DBL);
     cycle_four_edges_without_flipping(cube, DF, DR, DB, DL);
 }
 
+const CornerOrientation R_TWISTS[] = {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST};
+
 void r_normal(RubiksCube *cube) {
-    CornerOrientation twists[] = {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST};
-    cycle_four_corners_with_twists(cube, UFR, DFR, DBR, UBR, twists);
+    cycle_four_corners_with_twists(cube, UFR, DFR, DBR, UBR, R_TWISTS);
     cycle_four_edges_with_flipping(cube, UR, FR, DR, BR);
 }
-
 void r_prime(RubiksCube *cube) {
-    CornerOrientation twists[] = {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST};
-    cycle_four_corners_with_twists(cube, UFR, UBR, DBR, DFR, twists);
+    cycle_four_corners_with_twists(cube, UFR, UBR, DBR, DFR, R_TWISTS);
     cycle_four_edges_with_flipping(cube, UR, BR, DR, FR);
 }
 
+const CornerOrientation L_TWISTS[] = {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST};
+
 void l_normal(RubiksCube *cube) {
-    CornerOrientation twists[] = {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST};
-    cycle_four_corners_with_twists(cube, UFL, UBL, DBL, DFL, twists);
+    cycle_four_corners_with_twists(cube, UFL, UBL, DBL, DFL, L_TWISTS);
     cycle_four_edges_with_flipping(cube, UL, BL, DL, FL);
 }
-
 void l_prime(RubiksCube *cube) {
-    CornerOrientation twists[] = {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST};
-    cycle_four_corners_with_twists(cube, UFL, DFL, DBL, UBL, twists);
+    cycle_four_corners_with_twists(cube, UFL, DFL, DBL, UBL, L_TWISTS);
     cycle_four_edges_with_flipping(cube, UL, FL, DL, BL);
 }
 
+const CornerOrientation F_TWISTS[] = {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST};
+
 void f_normal(RubiksCube *cube) {
-    CornerOrientation twists[] = {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST};
-    cycle_four_corners_with_twists(cube, UFL, DFL, DFR, UFR, twists);
+    cycle_four_corners_with_twists(cube, UFL, DFL, DFR, UFR, F_TWISTS);
     cycle_four_edges_without_flipping(cube, UF, FL, DF, FR);
 }
-
 void f_prime(RubiksCube *cube) {
-    CornerOrientation twists[] = {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST};
-    cycle_four_corners_with_twists(cube, UFL, UFR, DFR, DFL, twists);
+    cycle_four_corners_with_twists(cube, UFL, UFR, DFR, DFL, F_TWISTS);
     cycle_four_edges_without_flipping(cube, UF, FR, DF, FL);
 }
 
+const CornerOrientation B_TWISTS[] = {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST};
+
 void b_normal(RubiksCube *cube) {
-    CornerOrientation twists[] = {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST};
-    cycle_four_corners_with_twists(cube, UBL, UBR, DBR, DBL, twists);
+    cycle_four_corners_with_twists(cube, UBL, UBR, DBR, DBL, B_TWISTS);
     cycle_four_edges_without_flipping(cube, UB, BR, DB, BL);
 }
-
 void b_prime(RubiksCube *cube) {
-    CornerOrientation twists[] = {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST};
-    cycle_four_corners_with_twists(cube, UBL, DBL, DBR, UBR, twists);
+    cycle_four_corners_with_twists(cube, UBL, DBL, DBR, UBR, B_TWISTS);
     cycle_four_edges_without_flipping(cube, UB, BL, DB, BR);
 }
 
@@ -226,7 +220,6 @@ void m_normal(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, UF, UB, DB, DF);
     cycle_four_centres(cube, FRONT, UP, BACK, DOWN);
 }
-
 void m_prime(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, UF, DF, DB, UB);
     cycle_four_centres(cube, FRONT, DOWN, BACK, UP);
@@ -236,7 +229,6 @@ void e_normal(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, FL, BL, BR, FR);
     cycle_four_centres(cube, FRONT, LEFT, BACK, RIGHT);
 }
-
 void e_prime(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, FL, FR, BR, BL);
     cycle_four_centres(cube, FRONT, RIGHT, BACK, LEFT);
@@ -246,7 +238,6 @@ void s_normal(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, UL, DL, DR, UR);
     cycle_four_centres(cube, UP, LEFT, DOWN, RIGHT);
 }
-
 void s_prime(RubiksCube *cube) {
     cycle_four_edges_with_flipping(cube, UL, UR, DR, DL);
     cycle_four_centres(cube, UP, RIGHT, DOWN, LEFT);
