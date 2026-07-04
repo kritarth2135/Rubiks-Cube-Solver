@@ -10,10 +10,10 @@
 
 typedef enum {
     WHITE,
+    ORANGE,
     GREEN,
     RED,
     BLUE,
-    ORANGE,
     YELLOW
 } Color;
 
@@ -25,26 +25,6 @@ typedef enum {
     BACK,
     DOWN
 } Position;
-
-typedef enum {
-    W = 'W',
-    G = 'G',
-    R = 'R',
-    B = 'B',
-    O = 'O',
-    Y = 'Y',
-} Sticker;
-
-typedef enum {
-    CORNER_TOP,
-    CORNER_RIGHT,
-    CORNER_LEFT
-} CornerStickerPosition;
-
-typedef enum {
-    EDGE_TOP,
-    EDGE_DOWN,
-} EdgeStickerPosition;
 
 // Location specified by abbrevation of face positions (Up, Down, Left, Right, Front, Back)
 // These are ordered according to the solved state of a cube
