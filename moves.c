@@ -37,10 +37,6 @@ typedef enum {
     Z
 } CubeMove;
 
-// const char FACE_MOVES[NUMBER_OF_FACE_MOVES] = {'U', 'L', 'F', 'R', 'B', 'D'};
-// const char MIDDLE_MOVES[NUMBER_OF_MIDDLE_MOVES] = {'M', 'E', 'S'};
-// const char CUBE_MOVES[NUMBER_OF_CUBE_MOVES] = {'X', 'Y', 'Z'};
-
 const CornerCubie NORMAL_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {UFL, UFR, UBR, UBL},
     {UFL, UBL, DBL, DFL},
@@ -357,7 +353,7 @@ int make_move(RubiksCube* cube, char *move_str) {
         else if (len >= 2) {
             char move_type = move_str[1];
             bool is_wide = false;
-            if (move_type == 'w') {
+            if (move_type == 'w' || move_type == 'W') {
                 if (len != 3) {
                     wide_face_move(cube, base_move);
                     return 0;

@@ -24,6 +24,7 @@ int main(void) {
         if (make_move(cube, buffer) != 0) {
             printf("Invalid move!\n");
         }
+        printf("\n");
         print_cube(cube);
     }
 
