@@ -14,6 +14,7 @@
 #define NUMBER_OF_CUBE_MOVES 3
 
 #define MOVE_STR_LEN 3
+#define MAX_CHAR_VALUE 256
 
 typedef enum {
     U,
@@ -36,9 +37,9 @@ typedef enum {
     Z
 } CubeMove;
 
-const char FACE_MOVES[NUMBER_OF_FACE_MOVES] = {'U', 'L', 'F', 'R', 'B', 'D'};
-const char MIDDLE_MOVES[NUMBER_OF_MIDDLE_MOVES] = {'M', 'E', 'S'};
-const char CUBE_MOVES[NUMBER_OF_CUBE_MOVES] = {'X', 'Y', 'Z'};
+// const char FACE_MOVES[NUMBER_OF_FACE_MOVES] = {'U', 'L', 'F', 'R', 'B', 'D'};
+// const char MIDDLE_MOVES[NUMBER_OF_MIDDLE_MOVES] = {'M', 'E', 'S'};
+// const char CUBE_MOVES[NUMBER_OF_CUBE_MOVES] = {'X', 'Y', 'Z'};
 
 const CornerCubie NORMAL_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {UFL, UFR, UBR, UBL},
@@ -172,7 +173,7 @@ void cycle_four_centres(RubiksCube *cube, const Position centres[CENTRES_IN_MIDD
     }
 }
 
-void normal_face_move(RubiksCube *cube, int move) {
+void normal_face_move(RubiksCube *cube, FaceMove move) {
     switch (move) {
         case U:
         case D:
@@ -192,37 +193,37 @@ void normal_face_move(RubiksCube *cube, int move) {
     }
 }
 
-void prime_face_move(RubiksCube *cube, int move) {
+void prime_face_move(RubiksCube *cube, FaceMove move) {
     switch (move) {
         case U:
         case D:
-        cycle_four_corners(cube, PRIME_CORNERS[move]);
-        cycle_four_edges(cube, PRIME_EDGES[move]);
-        break;
+            cycle_four_corners(cube, PRIME_CORNERS[move]);
+            cycle_four_edges(cube, PRIME_EDGES[move]);
+            break;
         case R:
         case L:
-        cycle_four_corners_with_twists(cube, PRIME_CORNERS[move], TWISTS[move]);
-        cycle_four_edges_with_flipping(cube, PRIME_EDGES[move]);
-        break;
+            cycle_four_corners_with_twists(cube, PRIME_CORNERS[move], TWISTS[move]);
+            cycle_four_edges_with_flipping(cube, PRIME_EDGES[move]);
+            break;
         case F:
         case B:
-        cycle_four_corners_with_twists(cube, PRIME_CORNERS[move], TWISTS[move]);
-        cycle_four_edges(cube, PRIME_EDGES[move]);
-        break;
+            cycle_four_corners_with_twists(cube, PRIME_CORNERS[move], TWISTS[move]);
+            cycle_four_edges(cube, PRIME_EDGES[move]);
+            break;
     }
 }
 
-void normal_middle_move(RubiksCube *cube, int move) {
+void normal_middle_move(RubiksCube *cube, MiddleMove move) {
     cycle_four_edges_with_flipping(cube, MIDDLE_NORMAL_EDGES[move]);
     cycle_four_centres(cube, MIDDLE_NORMAL_CENTRES[move]);
 }
 
-void prime_middle_move(RubiksCube *cube, int move) {
+void prime_middle_move(RubiksCube *cube, MiddleMove move) {
     cycle_four_edges_with_flipping(cube, MIDDLE_PRIME_EDGES[move]);
     cycle_four_centres(cube, MIDDLE_PRIME_CENTRES[move]);
 }
 
-void wide_face_move(RubiksCube *cube, int move) {
+void wide_face_move(RubiksCube *cube, FaceMove move) {
     normal_face_move(cube, move);
     switch (move) {
         case U:
@@ -246,7 +247,7 @@ void wide_face_move(RubiksCube *cube, int move) {
     }
 }
 
-void wide_prime_face_move(RubiksCube *cube, int move) {
+void wide_prime_face_move(RubiksCube *cube, FaceMove move) {
     prime_face_move(cube, move);
     switch (move) {
         case U:
@@ -270,7 +271,7 @@ void wide_prime_face_move(RubiksCube *cube, int move) {
     }
 }
 
-void normal_cube_move(RubiksCube *cube, int move) {
+void normal_cube_move(RubiksCube *cube, CubeMove move) {
     switch (move) {
         case X:
             prime_face_move(cube, L);
@@ -290,7 +291,7 @@ void normal_cube_move(RubiksCube *cube, int move) {
     }
 }
 
-void prime_cube_move(RubiksCube *cube, int move) {
+void prime_cube_move(RubiksCube *cube, CubeMove move) {
     switch (move) {
         case X:
             normal_face_move(cube, L);
@@ -311,30 +312,33 @@ void prime_cube_move(RubiksCube *cube, int move) {
 }
 
 int get_face_move(char move) {
-    for (int i = 0; i < NUMBER_OF_FACE_MOVES; i++) {
-        if (FACE_MOVES[i] == move) {
-            return i;
-        }
+    switch (move) {
+        case 'U': return U;
+        case 'D': return D;
+        case 'L': return L;
+        case 'R': return R;
+        case 'F': return F;
+        case 'B': return B;
+        default: return -1;
     }
-    return -1;
 }
 
 int get_middle_move(char move) {
-    for (int i = 0; i < NUMBER_OF_MIDDLE_MOVES; i++) {
-        if (MIDDLE_MOVES[i] == move) {
-            return i;
-        }
+    switch (move) {
+        case 'M': return M;
+        case 'E': return E;
+        case 'S': return S;
+        default: return -1;
     }
-    return -1;
 }
 
 int get_cube_move(char move) {
-    for (int i = 0; i < NUMBER_OF_CUBE_MOVES; i++) {
-        if (CUBE_MOVES[i] == move) {
-            return i;
-        }
+    switch (move) {
+        case 'X': return X;
+        case 'Y': return Y;
+        case 'Z': return Z;
+        default: return -1;
     }
-    return -1;
 }
 
 int make_move(RubiksCube* cube, char *move_str) {
