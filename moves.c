@@ -14,7 +14,6 @@
 #define NUMBER_OF_CUBE_MOVES 3
 
 #define MOVE_STR_LEN 3
-#define MAX_CHAR_VALUE 256
 
 typedef enum {
     U,
