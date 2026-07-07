@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <math.h>
 
 #include "rubiks_cube.h"
 #include "pattern_database.h"
