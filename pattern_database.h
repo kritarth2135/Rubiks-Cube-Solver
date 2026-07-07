@@ -1,0 +1,6 @@
+#ifndef PATTERN_DATABASE_H
+#define PATTERN_DATABASE_H
+
+
+
+#endif
