@@ -3,23 +3,35 @@
 #include "rubiks_cube.h"
 #include "pattern_database.h"
 
-#define CUBIE_POSITION_BITS 3
-#define CUBIE_ORIENTATION_BITS 2
+#define CORNER_POSITION_BITS 3
+#define CORNER_ORIENTATION_BITS 2
+#define EDGE_POSITION_BITS 4
+#define EDGE_ORIENTATION_BITS 1
 
-// Each cubie is encoded into 5 bits, the first 3 bits indicating the position
-// of the cubie in the cube and the other 2 bits indicating the orientation of
-// the cubie. So all the cubies are encoded into a 40 bit unsigned integer.
+// Each corner is encoded into 5 bits, the first 3 bits indicating the position
+// of the corner in the cube and the other 2 bits indicating the orientation of
+// the corner.
 uint64_t encode_corners(RubiksCube *cube) {
     uint64_t value = 0;
     for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
-        value <<= CUBIE_POSITION_BITS;
+        value <<= CORNER_POSITION_BITS;
         value |= cube->corner_positions[i];
-        value <<= CUBIE_ORIENTATION_BITS;
+        value <<= CORNER_ORIENTATION_BITS;
         value |= cube->corner_orientations[i];
     }
     return value;
 }
 
-unsigned int encode_edges(RubiksCube *cube) {
-    return 0;
+// Each edge is encoded into 5 bits, the first 4 bits indicating the position
+// of the edge in the cube and the other 1 bit indicating the orientation of
+// the edge.
+uint64_t encode_edges(RubiksCube *cube) {
+    uint64_t value = 0;
+    for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
+        value <<= EDGE_POSITION_BITS;
+        value |= cube->edge_positions[i];
+        value <<= EDGE_ORIENTATION_BITS;
+        value |= cube->edge_orientations[i];
+    }
+    return value;
 }
