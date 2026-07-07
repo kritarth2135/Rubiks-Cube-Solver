@@ -94,6 +94,54 @@ RubiksCube * create_rubiks_cube(void) {
     return cube;
 }
 
+RubiksCube * copy_cube(RubiksCube *cube) {
+    RubiksCube *copy = malloc(sizeof(RubiksCube));
+    if (copy == NULL) {
+        return NULL;
+    }
+
+    for (int i = 0; i < NUMBER_OF_COLORS; i++) {
+        copy->centres[i] = cube->centres[i];
+    }
+
+    for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
+        copy->corner_positions[i] = cube->corner_positions[i];
+        copy->corner_orientations[i] = cube->corner_orientations[i];
+    }
+
+    for (int i = 0; i < NUMBER_OF_EDGES; i++) {
+        copy->edge_positions[i] = cube->edge_positions[i];
+        copy->edge_orientations[i] = cube->edge_orientations[i];
+    }
+
+    return copy;
+}
+
+int is_equal(RubiksCube *cube1, RubiksCube *cube2) {
+    for (int i = 0; i < NUMBER_OF_COLORS; i++) {
+        if (cube1->centres[i] != cube2->centres[i]) {
+            return 0;
+        };
+    }
+    for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
+        if (cube1->corner_positions[i] != cube2->corner_positions[i]) {
+            return 0;
+        };
+        if (cube1->corner_orientations[i] != cube2->corner_orientations[i]) {
+            return 0;
+        };
+    }
+    for (int i = 0; i < NUMBER_OF_EDGES; i++) {
+        if (cube1->edge_positions[i] != cube2->edge_positions[i]) {
+            return 0;
+        };
+        if (cube1->edge_orientations[i] != cube2->edge_orientations[i]) {
+            return 0;
+        };
+    }
+    return 1;
+}
+
 Sticker get_corner_sticker(RubiksCube *cube, CornerCubie cubie, CornerStickerPosition position) {
     return STICKERS[solved_centre_positions[CORNER_CUBIE_STICKER_POSITIONS[cube->corner_positions[cubie]][(position + cube->corner_orientations[cubie]) % CORNER_SIDES]]];
 }

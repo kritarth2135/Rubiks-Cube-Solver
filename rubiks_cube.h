@@ -65,6 +65,8 @@ extern const EdgeCubie solved_edges_positions[NUMBER_OF_EDGES];
 extern const EdgeOrientation solved_edges_orientations[NUMBER_OF_EDGES];
 
 RubiksCube * create_rubiks_cube(void);
+RubiksCube * copy_cube(RubiksCube *cube);
+int is_equal(RubiksCube *cube1, RubiksCube *cube2);
 
 void print_cube(RubiksCube *cube);
 
