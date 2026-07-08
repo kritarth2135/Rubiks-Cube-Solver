@@ -242,3 +242,31 @@ void print_cube(RubiksCube *cube) {
         printf("\n");
     }
 }
+
+void print_cube_arrays(RubiksCube *cube) {
+    printf("centres:             [");
+    for (int i = 0; i < NUMBER_OF_COLORS; i++) {
+        printf("%i,", cube->centres[i]);
+    }
+    printf("]\n");
+    printf("corner positions:    [");
+    for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
+        printf("%i,", cube->corner_positions[i]);
+    }
+    printf("]\n");
+    printf("corner orientations: [");
+    for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
+        printf("%i,", cube->corner_orientations[i]);
+    }
+    printf("]\n");
+    printf("edge positions:      [");
+    for (int i = 0; i < NUMBER_OF_EDGES; i++) {
+        printf("%i,", cube->edge_positions[i]);
+    }
+    printf("]\n");
+    printf("edge orientations:   [");
+    for (int i = 0; i < NUMBER_OF_EDGES; i++) {
+        printf("%i,", cube->edge_orientations[i]);
+    }
+    printf("]\n");
+}

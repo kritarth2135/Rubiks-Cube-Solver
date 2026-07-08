@@ -69,6 +69,7 @@ RubiksCube * copy_cube(RubiksCube *cube);
 int is_equal(RubiksCube *cube1, RubiksCube *cube2);
 
 void print_cube(RubiksCube *cube);
+void print_cube_arrays(RubiksCube *cube);
 
 int make_move(RubiksCube* cube, char *move);
 
