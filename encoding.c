@@ -55,13 +55,15 @@ int to_base_10(int array[], int size, int base) {
     return value;
 }
 
-void encode_cube(RubiksCube *cube, uint64_t indexes[NUMBER_OF_INDEXES]) {
+uint64_t encode_centres(RubiksCube *cube) {
     int centres[NUMBER_OF_COLORS];
     for (int i = 0; i < NUMBER_OF_COLORS; i++) {
         centres[i] = cube->centres[i];
     }
-    indexes[CENTRE_DB_INDEX] = lehmer_idx(centres, NUMBER_OF_COLORS);
+    return lehmer_idx(centres, NUMBER_OF_COLORS);
+}
 
+void encode_corners_and_edges(RubiksCube *cube, uint64_t indexes[NUMBER_OF_INDEXES]) {
     int corner_positions[NUMBER_OF_CORNERS];
     int corner_orientations[NUMBER_OF_CORNERS];
     for (int i = 0; i < NUMBER_OF_CORNERS; i++) {

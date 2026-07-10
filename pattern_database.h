@@ -5,12 +5,12 @@
 
 #include "rubiks_cube.h"
 
-#define NUMBER_OF_INDEXES 4
-#define CENTRE_DB_INDEX 0
-#define CORNER_DB_INDEX 1
-#define FIRST_SIX_EDGE_DB_INDEX 2
-#define LAST_SIX_EDGE_DB_INDEX 3
+#define NUMBER_OF_INDEXES 3
+#define CORNER_DB_INDEX 0
+#define FIRST_SIX_EDGE_DB_INDEX 1
+#define LAST_SIX_EDGE_DB_INDEX 2
 
-void encode_cube(RubiksCube *cube, uint64_t indexes[NUMBER_OF_INDEXES]);
+uint64_t encode_centres(RubiksCube *cube);
+void encode_corners_and_edges(RubiksCube *cube, uint64_t indexes[NUMBER_OF_INDEXES]);
 
 #endif
