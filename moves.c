@@ -13,8 +13,6 @@
 #define NUMBER_OF_MIDDLE_MOVES 3
 #define NUMBER_OF_CUBE_MOVES 3
 
-#define MOVE_STR_LEN 3
-
 typedef enum {
     U,
     L,
@@ -336,7 +334,7 @@ int get_cube_move(char move) {
     }
 }
 
-int make_move(RubiksCube* cube, char *move_str) {
+int make_move(RubiksCube* cube, const char *move_str) {
     int len = strlen(move_str);
     if (len == 0 || len > MOVE_STR_LEN) {
         return 1;

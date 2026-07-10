@@ -8,6 +8,9 @@
 #define CORNER_SIDES 3
 #define EDGE_SIDES 2
 
+#define MOVE_STR_LEN 3
+
+
 typedef enum {
     WHITE,
     ORANGE,
@@ -71,6 +74,6 @@ int is_equal(RubiksCube *cube1, RubiksCube *cube2);
 void print_cube(RubiksCube *cube);
 void print_cube_arrays(RubiksCube *cube);
 
-int make_move(RubiksCube* cube, char *move);
+int make_move(RubiksCube* cube, const char *move);
 
 #endif
