@@ -13,3 +13,8 @@ rubiks_cube_solver: $(OBJECTS)
 clean:
 	rm -f *.o
 	rm -f rubiks_cube_solver
+
+clean_db:
+	rm -f corner_db.bin
+	rm -f first_six_edge_db.bin
+	rm -f last_six_edge_db.bin
