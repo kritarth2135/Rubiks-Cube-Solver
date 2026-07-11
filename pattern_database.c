@@ -43,14 +43,23 @@ void create_db(
 
             uint64_t indexes[NUMBER_OF_INDEXES];
             encode_corners_and_edges(cube, indexes);
+            if (indexes[CORNER_DB_INDEX] > POSSIBLE_CORNER_COMBINATIONS) {
+                printf("%lu\n", indexes[CORNER_DB_INDEX]);
+            }
             if (corner_db[indexes[CORNER_DB_INDEX]] == 0 || corner_db[indexes[CORNER_DB_INDEX]] > *depth) {
                 corner_db[indexes[CORNER_DB_INDEX]] = *depth;
             }
-            if (first_edge_db[FIRST_SIX_EDGE_DB_INDEX] == 0 || first_edge_db[FIRST_SIX_EDGE_DB_INDEX] > *depth) {
-                first_edge_db[FIRST_SIX_EDGE_DB_INDEX] = *depth;
+            if (indexes[FIRST_SIX_EDGE_DB_INDEX] > POSSIBLE_SIX_EDGE_COMBINATIONS) {
+                printf("%lu\n", indexes[FIRST_SIX_EDGE_DB_INDEX]);
             }
-            if (second_edge_db[LAST_SIX_EDGE_DB_INDEX] == 0 || second_edge_db[LAST_SIX_EDGE_DB_INDEX] > *depth) {
-                second_edge_db[LAST_SIX_EDGE_DB_INDEX] = *depth;
+            if (first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] == 0 || first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] > *depth) {
+                first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] = *depth;
+            }
+            if (indexes[LAST_SIX_EDGE_DB_INDEX] > POSSIBLE_SIX_EDGE_COMBINATIONS) {
+                printf("%lu\n", indexes[LAST_SIX_EDGE_DB_INDEX]);
+            }
+            if (second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] == 0 || second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] > *depth) {
+                second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] = *depth;
             }
             create_db(corner_db, first_edge_db, second_edge_db, cube, depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len);
 
@@ -86,6 +95,7 @@ int create_and_store_db(
     free(corner_db);
     free(first_edge_db);
     free(second_edge_db);
+    free(cube);
     return 0;
 }
 
@@ -121,5 +131,6 @@ uint8_t * load_db(
     end = clock();
     printf("Loaded db in %f\n", (double)(end - begin) / CLOCKS_PER_SEC);
 
+    fclose(file);
     return db;
 }

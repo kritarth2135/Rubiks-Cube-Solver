@@ -4,7 +4,7 @@
 #include "pattern_database.h"
 
 #define MAX_SIZE 12
-#define ALL_POSSIBLE_CORNER_ORIENTATIONS 2187  // 3^7
+#define ALL_POSSIBLE_CORNER_ORIENTATIONS 6561  // 3^8
 #define ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS 64  // 2^6
 
 // Precomputed factorials
@@ -50,7 +50,7 @@ int lehmer_idx(int array[], int size) {
 int to_base_10(int array[], int size, int base) {
     int value = 0;
     for (int i = 0; i < size; i++) {
-        value = value * base + array[size - 1 - i];
+        value = value * base + array[i];
     }
     return value;
 }
