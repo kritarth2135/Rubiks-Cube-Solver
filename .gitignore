@@ -56,3 +56,7 @@ dkms.conf
 
 .vscode
 rubiks_cube_solver
+
+corner_db.bin
+first_six_edge_db.bin
+last_six_edge_db.bin
