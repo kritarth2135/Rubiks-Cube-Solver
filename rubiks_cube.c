@@ -70,7 +70,7 @@ const Position EDGE_CUBIE_STICKER_POSITIONS[NUMBER_OF_EDGES][EDGE_SIDES] = {
 };
 
 RubiksCube * create_rubiks_cube(void) {
-    // Default orientation: Red face on front and White on top
+    // Default color orientation is according to solved_centre_positions
 
     RubiksCube *cube = malloc(sizeof(RubiksCube));
     if (cube == NULL) {
