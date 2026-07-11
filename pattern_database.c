@@ -18,7 +18,7 @@ const char *REVERSE_BASIC_MOVES[NUMBER_OF_BASIC_MOVES] = {
     "U2", "D2", "L2", "R2", "F2", "B2"
 };
 
-const char *CORNER_DB_NAME = "centre_db.bin";
+const char *CORNER_DB_NAME = "corner_db.bin";
 const char *FIRST_SIX_EDGE_DB_NAME = "first_six_edge_db.bin";
 const char *LAST_SIX_EDGE_DB_NAME = "last_six_edge_db.bin";
 
