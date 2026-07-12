@@ -206,6 +206,11 @@ void prime_face_move(RubiksCube *cube, FaceMove move) {
     }
 }
 
+void double_face_move(RubiksCube *cube, FaceMove move) {
+    normal_face_move(cube, move);
+    normal_face_move(cube, move);
+}
+
 void normal_middle_move(RubiksCube *cube, MiddleMove move) {
     cycle_four_edges_with_flipping(cube, MIDDLE_NORMAL_EDGES[move]);
     cycle_four_centres(cube, MIDDLE_NORMAL_CENTRES[move]);
@@ -214,6 +219,11 @@ void normal_middle_move(RubiksCube *cube, MiddleMove move) {
 void prime_middle_move(RubiksCube *cube, MiddleMove move) {
     cycle_four_edges_with_flipping(cube, MIDDLE_PRIME_EDGES[move]);
     cycle_four_centres(cube, MIDDLE_PRIME_CENTRES[move]);
+}
+
+void double_middle_move(RubiksCube *cube, MiddleMove move) {
+    normal_middle_move(cube, move);
+    normal_middle_move(cube, move);
 }
 
 void wide_face_move(RubiksCube *cube, FaceMove move) {
@@ -264,6 +274,11 @@ void wide_prime_face_move(RubiksCube *cube, FaceMove move) {
     }
 }
 
+void double_wide_face_move(RubiksCube *cube, FaceMove move) {
+    wide_face_move(cube, move);
+    wide_face_move(cube, move);
+}
+
 void normal_cube_move(RubiksCube *cube, CubeMove move) {
     switch (move) {
         case X:
@@ -304,6 +319,11 @@ void prime_cube_move(RubiksCube *cube, CubeMove move) {
     }
 }
 
+void double_cube_move(RubiksCube *cube, CubeMove move) {
+    normal_cube_move(cube, move);
+    normal_cube_move(cube, move);
+}
+
 int get_face_move(char move) {
     switch (move) {
         case 'U': return U;
@@ -334,7 +354,77 @@ int get_cube_move(char move) {
     }
 }
 
-int make_move(RubiksCube* cube, const char *move_str) {
+void make_move(RubiksCube*cube, Move move) {
+    switch (move) {
+        case U_NORMAL: return normal_face_move(cube, U);
+        case U_PRIME: return prime_face_move(cube, U);
+        case U_TWO: return double_face_move(cube, U);
+        case U_WIDE_NORMAL: return wide_face_move(cube, U);
+        case U_WIDE_PRIME: return wide_prime_face_move(cube, U);
+        case U_WIDE_2: return double_wide_face_move(cube, U);
+
+        case D_NORMAL: return normal_face_move(cube, D);
+        case D_PRIME: return prime_face_move(cube, D);
+        case D_TWO: return double_face_move(cube, D);
+        case D_WIDE_NORMAL: return wide_face_move(cube, D);
+        case D_WIDE_PRIME: return wide_prime_face_move(cube, D);
+        case D_WIDE_2: return double_wide_face_move(cube, D);
+
+        case L_NORMAL: return normal_face_move(cube, L);
+        case L_PRIME: return prime_face_move(cube, L);
+        case L_TWO: return double_face_move(cube, L);
+        case L_WIDE_NORMAL: return wide_face_move(cube, L);
+        case L_WIDE_PRIME: return wide_prime_face_move(cube, L);
+        case L_WIDE_2: return double_wide_face_move(cube, L);
+
+        case R_NORMAL: return normal_face_move(cube, R);
+        case R_PRIME: return prime_face_move(cube, R);
+        case R_TWO: return double_face_move(cube, R);
+        case R_WIDE_NORMAL: return wide_face_move(cube, R);
+        case R_WIDE_PRIME: return wide_prime_face_move(cube, R);
+        case R_WIDE_2: return double_wide_face_move(cube, R);
+
+        case F_NORMAL: return normal_face_move(cube, F);
+        case F_PRIME: return prime_face_move(cube, F);
+        case F_TWO: return double_face_move(cube, F);
+        case F_WIDE_NORMAL: return wide_face_move(cube, F);
+        case F_WIDE_PRIME: return wide_prime_face_move(cube, F);
+        case F_WIDE_2: return double_wide_face_move(cube, F);
+
+        case B_NORMAL: return normal_face_move(cube, B);
+        case B_PRIME: return prime_face_move(cube, B);
+        case B_TWO: return double_face_move(cube, B);
+        case B_WIDE_NORMAL: return wide_face_move(cube, B);
+        case B_WIDE_PRIME: return wide_prime_face_move(cube, B);
+        case B_WIDE_2: return double_wide_face_move(cube, B);
+
+        case M_NORMAL: return normal_middle_move(cube, M);
+        case M_PRIME: return prime_middle_move(cube, M);
+        case M_TWO: return double_middle_move(cube, M);
+
+        case E_NORMAL: return normal_middle_move(cube, E);
+        case E_PRIME: return prime_middle_move(cube, E);
+        case E_TWO: return double_middle_move(cube, E);
+
+        case S_NORMAL: return normal_middle_move(cube, S);
+        case S_PRIME: return prime_middle_move(cube, S);
+        case S_TWO: return double_middle_move(cube, S);
+
+        case X_NORMAL: return normal_cube_move(cube, X);
+        case X_PRIME: return prime_cube_move(cube, X);
+        case X_TWO: return double_cube_move(cube, X);
+
+        case Y_NORMAL: return normal_cube_move(cube, Y);
+        case Y_PRIME: return prime_cube_move(cube, Y);
+        case Y_TWO: return double_cube_move(cube, Y);
+
+        case Z_NORMAL: return normal_cube_move(cube, Z);
+        case Z_PRIME: return prime_cube_move(cube, Z);
+        case Z_TWO: return double_cube_move(cube, Z);
+    }
+}
+
+int parse_and_make_move(RubiksCube* cube, const char *move_str) {
     int len = strlen(move_str);
     if (len == 0 || len > MOVE_STR_LEN) {
         return 1;
@@ -371,12 +461,10 @@ int make_move(RubiksCube* cube, const char *move_str) {
             }
             else if (move_type == '2') {
                 if (is_wide) {
-                    wide_face_move(cube, base_move);
-                    wide_face_move(cube, base_move);
+                    double_wide_face_move(cube, base_move);
                 }
                 else {
-                    normal_face_move(cube, base_move);
-                    normal_face_move(cube, base_move);
+                    double_face_move(cube, base_move);
                 }
             }
             else {
@@ -397,8 +485,7 @@ int make_move(RubiksCube* cube, const char *move_str) {
                 prime_middle_move(cube, base_move);
             }
             else if (move_type == '2') {
-                normal_middle_move(cube, base_move);
-                normal_middle_move(cube, base_move);
+                double_middle_move(cube, base_move);
             }
             else {
                 return 1;
@@ -418,8 +505,7 @@ int make_move(RubiksCube* cube, const char *move_str) {
                 prime_cube_move(cube, base_move);
             }
             else if (move_type == '2') {
-                normal_cube_move(cube, base_move);
-                normal_cube_move(cube, base_move);
+                double_cube_move(cube, base_move);
             }
             else {
                 return 1;

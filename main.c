@@ -37,7 +37,7 @@ int main(void) {
         if (buffer[0] == 'q' && buffer[1] == '\0') {
             break;
         }
-        if (make_move(cube, buffer) != 0) {
+        if (parse_and_make_move(cube, buffer) != 0) {
             printf("Invalid move!\n");
         }
         printf("\n");

@@ -6,16 +6,16 @@
 #include "pattern_database.h"
 #include "rubiks_cube.h"
 
-const char *BASIC_MOVES[NUMBER_OF_BASIC_MOVES] = {
-    "U", "D", "L", "R", "F", "B",
-    "U'", "D'", "L'", "R'", "F'", "B'",
-    "U2", "D2", "L2", "R2", "F2", "B2"
+const Move BASIC_MOVES[NUMBER_OF_BASIC_MOVES] = {
+    U_NORMAL, D_NORMAL, L_NORMAL, R_NORMAL, F_NORMAL, B_NORMAL,
+    U_PRIME, D_PRIME, L_PRIME, R_PRIME, F_PRIME, B_PRIME,
+    U_TWO, D_TWO, L_TWO, R_TWO, F_TWO, B_TWO
 };
 
-const char *REVERSE_BASIC_MOVES[NUMBER_OF_BASIC_MOVES] = {
-    "U'", "D'", "L'", "R'", "F'", "B'",
-    "U", "D", "L", "R", "F", "B",
-    "U2", "D2", "L2", "R2", "F2", "B2"
+const Move REVERSE_BASIC_MOVES[NUMBER_OF_BASIC_MOVES] = {
+    U_PRIME, D_PRIME, L_PRIME, R_PRIME, F_PRIME, B_PRIME,
+    U_NORMAL, D_NORMAL, L_NORMAL, R_NORMAL, F_NORMAL, B_NORMAL,
+    U_TWO, D_TWO, L_TWO, R_TWO, F_TWO, B_TWO
 };
 
 const char *CORNER_DB_NAME = "corner_db.bin";
@@ -34,34 +34,29 @@ int write_db_to_file(uint8_t *db, int size_of_db, const char *db_name) {
 
 void create_db(
     uint8_t *corner_db, uint8_t *first_edge_db, uint8_t *second_edge_db, RubiksCube *cube, int *depth, int max_depth,
-    const char **basic_moves,const char **reverse_basic_moves, int basic_moves_len
+    const Move *basic_moves, const Move *reverse_basic_moves, int basic_moves_len, Move *moves
 ) {
     if (*depth < max_depth) {
         (*depth)++;
         for (int i = 0; i < basic_moves_len; i++) {
             make_move(cube, basic_moves[i]);
+            moves[*depth - 1] = basic_moves[i];
+            if (*depth > 1 && reverse_basic_moves[i] == moves[*depth - 2]) {
+                continue;
+            }
 
             uint64_t indexes[NUMBER_OF_INDEXES];
             encode_corners_and_edges(cube, indexes);
-            if (indexes[CORNER_DB_INDEX] > POSSIBLE_CORNER_COMBINATIONS) {
-                printf("%lu\n", indexes[CORNER_DB_INDEX]);
-            }
             if (corner_db[indexes[CORNER_DB_INDEX]] == 0 || corner_db[indexes[CORNER_DB_INDEX]] > *depth) {
                 corner_db[indexes[CORNER_DB_INDEX]] = *depth;
-            }
-            if (indexes[FIRST_SIX_EDGE_DB_INDEX] > POSSIBLE_SIX_EDGE_COMBINATIONS) {
-                printf("%lu\n", indexes[FIRST_SIX_EDGE_DB_INDEX]);
             }
             if (first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] == 0 || first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] > *depth) {
                 first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] = *depth;
             }
-            if (indexes[LAST_SIX_EDGE_DB_INDEX] > POSSIBLE_SIX_EDGE_COMBINATIONS) {
-                printf("%lu\n", indexes[LAST_SIX_EDGE_DB_INDEX]);
-            }
             if (second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] == 0 || second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] > *depth) {
                 second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] = *depth;
             }
-            create_db(corner_db, first_edge_db, second_edge_db, cube, depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len);
+            create_db(corner_db, first_edge_db, second_edge_db, cube, depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len, moves);
 
             make_move(cube, reverse_basic_moves[i]);
         }
@@ -70,7 +65,7 @@ void create_db(
 }
 
 int create_and_store_db(
-    int max_depth, const char **basic_moves, const char **reverse_basic_moves,
+    int max_depth, const Move *basic_moves, const Move *reverse_basic_moves,
     int basic_moves_len
 ) {
     uint8_t *corner_db = calloc(sizeof(uint8_t), POSSIBLE_CORNER_COMBINATIONS);
@@ -81,8 +76,8 @@ int create_and_store_db(
         return 1;
     }
     int depth = 0;
-
-    create_db(corner_db, first_edge_db, second_edge_db, cube, &depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len);
+    Move moves[max_depth];
+    create_db(corner_db, first_edge_db, second_edge_db, cube, &depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len, moves);
     if (write_db_to_file(corner_db, sizeof(uint8_t) * POSSIBLE_CORNER_COMBINATIONS, CORNER_DB_NAME) == 1) {
         return 1;
     }
@@ -100,13 +95,13 @@ int create_and_store_db(
 }
 
 uint8_t * load_db(
-    int max_depth, const char **basic_moves, const char **reverse_basic_moves,
+    int max_depth, const Move *basic_moves, const Move *reverse_basic_moves,
     int basic_moves_len, const char *db_name, int possible_combinations
 ) {
     clock_t begin, end;
     FILE * file = fopen(db_name, "rb");
     if (file == NULL) {
-        printf("Database not found, creating them...\n");
+        printf("Database not found, creating them... \n");
         begin = clock();
         if (create_and_store_db(max_depth, basic_moves, reverse_basic_moves, basic_moves_len) == 1) {
             return NULL;
@@ -118,9 +113,6 @@ uint8_t * load_db(
             return NULL;
         }
     }
-    else {
-        printf("Database found, loading it...\n");
-    }
 
     begin = clock();
     uint8_t *db = calloc(sizeof(uint8_t), possible_combinations);
@@ -129,7 +121,7 @@ uint8_t * load_db(
     }
     fread(db, sizeof(uint8_t), possible_combinations, file);
     end = clock();
-    printf("Loaded db in %f\n", (double)(end - begin) / CLOCKS_PER_SEC);
+    printf("Loaded %s in %f\n", db_name, (double)(end - begin) / CLOCKS_PER_SEC);
 
     fclose(file);
     return db;
