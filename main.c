@@ -17,9 +17,15 @@ int main(void) {
 
     // Loading databases
     uint8_t *corner_db = load_db(MAX_DEPTH, BASIC_MOVES, REVERSE_BASIC_MOVES, NUMBER_OF_BASIC_MOVES, CORNER_DB_NAME, POSSIBLE_CORNER_COMBINATIONS);
+    if (corner_db == NULL) {
+        return 1;
+    }
     uint8_t *first_six_edge_db = load_db(MAX_DEPTH, BASIC_MOVES, REVERSE_BASIC_MOVES, NUMBER_OF_BASIC_MOVES, FIRST_SIX_EDGE_DB_NAME, POSSIBLE_SIX_EDGE_COMBINATIONS);
+    if (first_six_edge_db == NULL) {
+        return 1;
+    }
     uint8_t *last_six_edge_db = load_db(MAX_DEPTH, BASIC_MOVES, REVERSE_BASIC_MOVES, NUMBER_OF_BASIC_MOVES, LAST_SIX_EDGE_DB_NAME, POSSIBLE_SIX_EDGE_COMBINATIONS);
-    if (corner_db == NULL || first_six_edge_db == NULL || last_six_edge_db == NULL) {
+    if (last_six_edge_db == NULL) {
         return 1;
     }
     printf("\n");
