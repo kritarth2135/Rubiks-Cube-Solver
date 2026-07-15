@@ -34,6 +34,21 @@ typedef enum {
     Z
 } CubeMove;
 
+const char *STRING_REPRESENTATION_OF_MOVES[] = {
+    "U", "U'", "U2", "Uw", "Uw'", "Uw2",
+    "D", "D'", "D2", "Dw", "Dw'", "Dw2",
+    "L", "L'", "L2", "Lw", "Lw'", "Lw2",
+    "R", "R'", "R2", "Rw", "Rw'", "Rw2",
+    "F", "F'", "F2", "Fw", "Fw'", "Fw2",
+    "B", "B'", "B2", "Bw", "Bw'", "Bw2",
+    "M", "M'", "M2",
+    "E", "E'", "E2",
+    "S", "S'", "S2",
+    "x", "x'", "x2",
+    "y", "y'", "y2",
+    "z", "z'", "z2",
+};
+
 const CornerCubie NORMAL_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {UFL, UFR, UBR, UBL},
     {UFL, UBL, DBL, DFL},

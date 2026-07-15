@@ -1,6 +1,7 @@
 #ifndef RUBIKS_CUBE_H
 #define RUBIKS_CUBE_H
 
+#define NUMBER_OF_FACES 6
 #define NUMBER_OF_COLORS 6
 #define NUMBER_OF_CORNERS 8
 #define NUMBER_OF_EDGES 12
@@ -75,6 +76,8 @@ typedef enum {
     Y_NORMAL, Y_PRIME, Y_TWO,
     Z_NORMAL, Z_PRIME, Z_TWO,
 } Move;
+
+extern const char *STRING_REPRESENTATION_OF_MOVES[];
 
 extern const Color solved_centre_pattern[NUMBER_OF_COLORS];
 extern const CornerCubie solved_corner_positions[NUMBER_OF_CORNERS];
