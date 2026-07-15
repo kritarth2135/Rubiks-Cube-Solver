@@ -6,6 +6,8 @@
 #include "pattern_database.h"
 #include "rubiks_cube.h"
 
+// The order of the moves in these two arrays matter as some of the conditions depend on the
+// order of these arrays in create_db function
 const Move BASIC_MOVES[NUMBER_OF_BASIC_MOVES] = {
     U_NORMAL, D_NORMAL, L_NORMAL, R_NORMAL, F_NORMAL, B_NORMAL,
     U_PRIME, D_PRIME, L_PRIME, R_PRIME, F_PRIME, B_PRIME,
@@ -34,20 +36,37 @@ int write_db_to_file(uint8_t *db, int size_of_db, const char *db_name) {
 
 void create_db(
     uint8_t *corner_db, uint8_t *first_edge_db, uint8_t *second_edge_db, RubiksCube *cube, int *depth, int max_depth,
-    const Move *basic_moves, const Move *reverse_basic_moves, int basic_moves_len, Move *moves, long long unsigned *no_of_nodes_processed
+    const Move *basic_moves, const Move *reverse_basic_moves, int basic_moves_len, int *prev_moves_indexes, long long unsigned *no_of_nodes_processed
 ) {
     if (*depth < max_depth) {
         (*depth)++;
         for (int i = 0; i < basic_moves_len; i++) {
-            moves[*depth - 1] = basic_moves[i];
-            // Skip if current move undos the previous move
-            if (*depth > 1 && reverse_basic_moves[i] == moves[*depth - 2]) {
-                continue;
-            }
+            prev_moves_indexes[*depth - 1] = i;
+            // The method used to evaluate the conditions below is possible due to the order
+            // in which the items are in BASIC_MOVES and REVERSE_BASIC_MOVES arrays
+
             // Skip if the current move is same as the previous move as there are double moves for that
             // This also eliminates things like triple moves instead of prime moves, four of the same
             // moves or two moves and then a double move.
-            if (*depth > 1 && moves[*depth - 1] == moves[*depth - 2]) {
+            // Skip if current move undos the previous move
+            // Doing a double move before or after doing a normal or prime move on the same face is redundant
+            // so skipping those.
+            // So in short you don't move the same face consecutively.
+            if (
+                *depth > 1 &&
+                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == i % NUMBER_OF_FACES
+            ) {
+                continue;
+            }
+            // As moving opposite faces is commutative, we only allow one order to move opposite faces
+            // and forbid the opposite order
+            if (
+                *depth > 1 &&
+                // This condition is required because without it this will also skip moves like Left face move
+                // after the D face move or Front face move after a right face move
+                prev_moves_indexes[*depth - 2] % 2 == 0 &&
+                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == (i % NUMBER_OF_FACES) - 1
+            ) {
                 continue;
             }
 
@@ -65,7 +84,7 @@ void create_db(
             if (second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] == 0 || second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] > *depth) {
                 second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] = *depth;
             }
-            create_db(corner_db, first_edge_db, second_edge_db, cube, depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len, moves, no_of_nodes_processed);
+            create_db(corner_db, first_edge_db, second_edge_db, cube, depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len, prev_moves_indexes, no_of_nodes_processed);
 
             make_move(cube, reverse_basic_moves[i]);
         }
@@ -85,9 +104,9 @@ int create_and_store_db(
         return 1;
     }
     int depth = 0;
-    Move moves[max_depth];
+    int prev_moves_indexes[max_depth];
     long long unsigned number_of_nodes_processed = 0;
-    create_db(corner_db, first_six_edge_db, last_six_edge_db, cube, &depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len, moves, &number_of_nodes_processed);
+    create_db(corner_db, first_six_edge_db, last_six_edge_db, cube, &depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len, prev_moves_indexes, &number_of_nodes_processed);
     RubiksCube *new_cube = create_rubiks_cube();
     if (!is_equal(cube, new_cube)) {
         printf("Database creation failed as the used cube is NOT in the same state as it was before starting to create the database.\n");
