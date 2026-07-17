@@ -63,37 +63,32 @@ uint64_t encode_centres(RubiksCube *cube) {
     return lehmer_idx(centres, NUMBER_OF_COLORS);
 }
 
-void encode_corners_and_edges(RubiksCube *cube, uint64_t indexes[NUMBER_OF_INDEXES]) {
+uint64_t encode_corners(RubiksCube *cube) {
     int corner_positions[NUMBER_OF_CORNERS];
     int corner_orientations[NUMBER_OF_CORNERS];
     for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
         corner_positions[i] = cube->corner_positions[i];
         corner_orientations[i] = cube->corner_orientations[i];
     }
-    indexes[CORNER_DB_INDEX] = (
+    return (
         (lehmer_idx(corner_positions, NUMBER_OF_CORNERS) * ALL_POSSIBLE_CORNER_ORIENTATIONS) +
         to_base_10(corner_orientations, NUMBER_OF_CORNERS - 1, CORNER_SIDES)
     );
+}
 
-    int first_six_edge_positions[NUMBER_OF_EDGES / 2], last_six_edge_positions[NUMBER_OF_EDGES / 2];
-    int first_six_edge_orientations[NUMBER_OF_EDGES / 2], last_six_edge_orientations[NUMBER_OF_EDGES / 2];
+uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cubie) {
+    int number_of_edges = end_cubie - start_cubie + 1;
+    int edge_positions[number_of_edges];
+    int edge_orientations[number_of_edges];
     for (int i = 0; i < NUMBER_OF_EDGES; i++) {
-        int edge = cube->edge_positions[i];
-        if (edge == UF || edge == UL || edge == UB || edge == UR || edge == FL || edge == BL) {
-            first_six_edge_positions[edge] = i;
-            first_six_edge_orientations[edge] = cube->edge_orientations[i];
-        }
-        else {
-            last_six_edge_positions[edge - (NUMBER_OF_EDGES / 2)] = i;
-            last_six_edge_orientations[edge - (NUMBER_OF_EDGES / 2)] = cube->edge_orientations[i];
+        EdgeCubie edge = cube->edge_positions[i];
+        if (edge >= start_cubie && edge <= end_cubie) {
+            edge_positions[edge - start_cubie] = i;
+            edge_orientations[edge - start_cubie] = cube->edge_orientations[i];
         }
     }
-    indexes[FIRST_SIX_EDGE_DB_INDEX] = (
-        (lehmer_idx(first_six_edge_positions, NUMBER_OF_EDGES / 2) * ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS) +
-        to_base_10(first_six_edge_orientations, NUMBER_OF_EDGES / 2, EDGE_SIDES)
-    );
-    indexes[LAST_SIX_EDGE_DB_INDEX] = (
-        (lehmer_idx(last_six_edge_positions, NUMBER_OF_EDGES / 2) * ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS) +
-        to_base_10(last_six_edge_orientations, NUMBER_OF_EDGES / 2, EDGE_SIDES)
+    return (
+        (lehmer_idx(edge_positions, number_of_edges) * ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS) +
+        to_base_10(edge_orientations, number_of_edges, EDGE_SIDES)
     );
 }

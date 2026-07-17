@@ -23,11 +23,20 @@ extern const char *FIRST_SIX_EDGE_DB_NAME;
 extern const char *LAST_SIX_EDGE_DB_NAME;
 
 uint64_t encode_centres(RubiksCube *cube);
+uint64_t encode_corners(RubiksCube *cube);
+uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cubie);
 void encode_corners_and_edges(RubiksCube *cube, uint64_t indexes[NUMBER_OF_INDEXES]);
 
+int write_db_to_file(uint8_t *db, int size_of_db, const char *db_name);
+
+int get_four_bits(uint8_t *array, uint64_t index);
+void set_four_bits(uint8_t *array, uint64_t index, int value);
+
 uint8_t * load_db(
-    int max_depth, const Move *basic_moves, const Move *reverse_basic_moves,
-    int basic_moves_len, const char *db_name, int possible_combinations
+    const char *db_name, int max_depth, uint64_t possible_combinations,
+    void (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
 );
+
+uint8_t * load_corner_db();
 
 #endif

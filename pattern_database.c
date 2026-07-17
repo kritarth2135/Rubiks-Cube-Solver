@@ -24,6 +24,8 @@ const char *CORNER_DB_NAME = "corner_db.bin";
 const char *FIRST_SIX_EDGE_DB_NAME = "first_six_edge_db.bin";
 const char *LAST_SIX_EDGE_DB_NAME = "last_six_edge_db.bin";
 
+const int FOUR_BITS_MASK = 0b1111;
+
 int write_db_to_file(uint8_t *db, int size_of_db, const char *db_name) {
     FILE *file = fopen(db_name, "wb");
     if (file == NULL) {
@@ -34,143 +36,103 @@ int write_db_to_file(uint8_t *db, int size_of_db, const char *db_name) {
     return 0;
 }
 
-void create_db(
-    uint8_t *corner_db, uint8_t *first_edge_db, uint8_t *second_edge_db, RubiksCube *cube, int *depth, int max_depth,
-    const Move *basic_moves, const Move *reverse_basic_moves, int basic_moves_len, int *prev_moves_indexes, long long unsigned *no_of_nodes_processed
-) {
-    if (*depth < max_depth) {
-        (*depth)++;
-        for (int i = 0; i < basic_moves_len; i++) {
-            prev_moves_indexes[*depth - 1] = i;
-            // The method used to evaluate the conditions below is possible due to the order
-            // in which the items are in BASIC_MOVES and REVERSE_BASIC_MOVES arrays
+int get_four_bits(uint8_t *array, uint64_t index) {
+    uint64_t byte_index = index / 2;
+    if (index % 2 == 0) {
+        return array[byte_index] >> 4;
+    }
+    else {
+        return array[byte_index] & FOUR_BITS_MASK;
+    }
+}
 
-            // Skip if the current move is same as the previous move as there are double moves for that
-            // This also eliminates things like triple moves instead of prime moves, four of the same
-            // moves or two moves and then a double move.
-            // Skip if current move undos the previous move
-            // Doing a double move before or after doing a normal or prime move on the same face is redundant
-            // so skipping those.
-            // So in short you don't move the same face consecutively.
-            if (
-                *depth > 1 &&
-                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == i % NUMBER_OF_FACES
-            ) {
-                continue;
-            }
-            // As moving opposite faces is commutative, we only allow one order to move opposite faces
-            // and forbid the opposite order
-            if (
-                *depth > 1 &&
-                // This condition is required because without it this will also skip moves like Left face move
-                // after the D face move or Front face move after a right face move
-                prev_moves_indexes[*depth - 2] % 2 == 0 &&
-                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == (i % NUMBER_OF_FACES) - 1
-            ) {
-                continue;
-            }
-
-            make_move(cube, basic_moves[i]);
-            uint64_t indexes[NUMBER_OF_INDEXES];
-            encode_corners_and_edges(cube, indexes);
-            (*no_of_nodes_processed)++;
-
-            if (corner_db[indexes[CORNER_DB_INDEX]] == 0 || corner_db[indexes[CORNER_DB_INDEX]] > *depth) {
-                corner_db[indexes[CORNER_DB_INDEX]] = *depth;
-            }
-            if (first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] == 0 || first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] > *depth) {
-                first_edge_db[indexes[FIRST_SIX_EDGE_DB_INDEX]] = *depth;
-            }
-            if (second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] == 0 || second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] > *depth) {
-                second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] = *depth;
-            }
-            create_db(
-                corner_db, first_edge_db, second_edge_db, cube, depth, max_depth,
-                basic_moves, reverse_basic_moves, basic_moves_len, prev_moves_indexes, no_of_nodes_processed
-            );
-
-            make_move(cube, reverse_basic_moves[i]);
-        }
-        (*depth)--;
+void set_four_bits(uint8_t *array, uint64_t index, int value) {
+    uint64_t byte_index = index / 2;
+    value &= FOUR_BITS_MASK;
+    if (index % 2 == 0) {
+        value <<= 4;
+        array[byte_index] &= ~(FOUR_BITS_MASK << 4); // Clearing out first four bits
+        array[byte_index] |= value;
+    }
+    else {
+        array[byte_index] &= ~FOUR_BITS_MASK;
+        array[byte_index] |= value;
     }
 }
 
 int create_and_store_db(
-    int max_depth, const Move *basic_moves, const Move *reverse_basic_moves,
-    int basic_moves_len
+    const char *db_name, int max_depth, uint64_t possible_combinations,
+    void (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
 ) {
-    uint8_t *corner_db = calloc(POSSIBLE_CORNER_COMBINATIONS, sizeof(uint8_t));
-    uint8_t *first_six_edge_db = calloc(POSSIBLE_SIX_EDGE_COMBINATIONS, sizeof(uint8_t));
-    uint8_t *last_six_edge_db = calloc(POSSIBLE_SIX_EDGE_COMBINATIONS, sizeof(uint8_t));
+    uint64_t size = (possible_combinations / 2) + 1;
+    uint8_t *db = calloc(size, sizeof(uint8_t));
+    if (db == NULL) {
+        return 1;
+    }
     RubiksCube *cube = create_rubiks_cube();
-    if (corner_db == NULL || first_six_edge_db == NULL || last_six_edge_db == NULL || cube == NULL) {
+    if (cube == NULL) {
         return 1;
     }
     int depth = 0;
-    int prev_moves_indexes[max_depth];
-    long long unsigned number_of_nodes_processed = 0;
+    int previous_move_indexes[max_depth];
+    long long unsigned no_of_nodes_processed = 0;
 
-    create_db(
-        corner_db, first_six_edge_db, last_six_edge_db, cube, &depth, max_depth,
-        basic_moves, reverse_basic_moves, basic_moves_len, prev_moves_indexes, &number_of_nodes_processed
-    );
-
+    clock_t begin, end;
+    begin = clock();
+    db_creation_fun(db, cube, &depth, max_depth, &no_of_nodes_processed, previous_move_indexes);
+    end = clock();
     RubiksCube *new_cube = create_rubiks_cube();
+    if (new_cube == NULL) {
+        return 1;
+    }
     if (!is_equal(cube, new_cube)) {
-        printf("Database creation failed as the used cube is NOT in the same state as it was before starting to create the database.\n");
-        free(corner_db);
-        free(first_six_edge_db);
-        free(last_six_edge_db);
+        printf("%s creation failed as the used cube is NOT in the same state as it was before starting to create the database.\n", db_name);
         free(cube);
+        free(db);
         free(new_cube);
+        return 2;
+    }
+    if (write_db_to_file(db, size, db_name) != 0) {
         return 1;
     }
-    free(new_cube);
-    printf("Processed %llu nodes at depth %i.\n", number_of_nodes_processed, max_depth);
-    if (write_db_to_file(corner_db, sizeof(uint8_t) * POSSIBLE_CORNER_COMBINATIONS, CORNER_DB_NAME) == 1) {
-        return 1;
-    }
-    if (write_db_to_file(first_six_edge_db, sizeof(uint8_t) * POSSIBLE_SIX_EDGE_COMBINATIONS, FIRST_SIX_EDGE_DB_NAME) == 1) {
-        return 1;
-    }
-    if (write_db_to_file(last_six_edge_db, sizeof(uint8_t) * POSSIBLE_SIX_EDGE_COMBINATIONS, LAST_SIX_EDGE_DB_NAME) == 1) {
-        return 1;
-    }
-    free(corner_db);
-    free(first_six_edge_db);
-    free(last_six_edge_db);
+    printf(
+        "Successfully created %s in %f seconds. (Processed %llu nodes at depth %i)\n",
+        db_name,
+        (double)(end - begin) / CLOCKS_PER_SEC,
+        no_of_nodes_processed,
+        max_depth
+    );
+    free(db);
     free(cube);
+    free(new_cube);
     return 0;
 }
 
 uint8_t * load_db(
-    int max_depth, const Move *basic_moves, const Move *reverse_basic_moves,
-    int basic_moves_len, const char *db_name, int possible_combinations
+    const char *db_name, int max_depth, uint64_t possible_combinations,
+    void (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
 ) {
-    clock_t begin, end;
     FILE * file = fopen(db_name, "rb");
     if (file == NULL) {
-        printf("Database not found, creating them... \n");
-        begin = clock();
-        if (create_and_store_db(max_depth, basic_moves, reverse_basic_moves, basic_moves_len) == 1) {
+        printf("%s not found, creating it... \n", db_name);
+        if (create_and_store_db(db_name, max_depth, possible_combinations, db_creation_fun) == 1) {
             return NULL;
         }
-        end = clock();
-        printf("Created all the dbs in %f\n", (double)(end - begin) / CLOCKS_PER_SEC);
         file = fopen(db_name, "rb");
         if (file == NULL) {
             return NULL;
         }
     }
-
-    begin = clock();
-    uint8_t *db = calloc(possible_combinations, sizeof(uint8_t));
+    uint64_t size = (possible_combinations / 2) + 1;
+    uint8_t *db = calloc(size, sizeof(uint8_t));
     if (db == NULL) {
         return NULL;
     }
-    fread(db, sizeof(uint8_t), possible_combinations, file);
+    clock_t begin, end;
+    begin = clock();
+    fread(db, sizeof(uint8_t), size, file);
     end = clock();
-    printf("Loaded %s in %f\n", db_name, (double)(end - begin) / CLOCKS_PER_SEC);
+    printf("Loaded %s in %f seconds.\n", db_name, (double)(end - begin) / CLOCKS_PER_SEC);
 
     fclose(file);
     return db;
