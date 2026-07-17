@@ -4,7 +4,7 @@
 #include "pattern_database.h"
 
 #define MAX_SIZE 12
-#define ALL_POSSIBLE_CORNER_ORIENTATIONS 6561  // 3^8
+#define ALL_POSSIBLE_CORNER_ORIENTATIONS 2187  // 3^7
 #define ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS 64  // 2^6
 
 // Precomputed factorials
@@ -72,7 +72,7 @@ void encode_corners_and_edges(RubiksCube *cube, uint64_t indexes[NUMBER_OF_INDEX
     }
     indexes[CORNER_DB_INDEX] = (
         (lehmer_idx(corner_positions, NUMBER_OF_CORNERS) * ALL_POSSIBLE_CORNER_ORIENTATIONS) +
-        to_base_10(corner_orientations, NUMBER_OF_CORNERS, CORNER_SIDES)
+        to_base_10(corner_orientations, NUMBER_OF_CORNERS - 1, CORNER_SIDES)
     );
 
     int first_six_edge_positions[NUMBER_OF_EDGES / 2], last_six_edge_positions[NUMBER_OF_EDGES / 2];

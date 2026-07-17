@@ -84,7 +84,10 @@ void create_db(
             if (second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] == 0 || second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] > *depth) {
                 second_edge_db[indexes[LAST_SIX_EDGE_DB_INDEX]] = *depth;
             }
-            create_db(corner_db, first_edge_db, second_edge_db, cube, depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len, prev_moves_indexes, no_of_nodes_processed);
+            create_db(
+                corner_db, first_edge_db, second_edge_db, cube, depth, max_depth,
+                basic_moves, reverse_basic_moves, basic_moves_len, prev_moves_indexes, no_of_nodes_processed
+            );
 
             make_move(cube, reverse_basic_moves[i]);
         }
@@ -96,9 +99,9 @@ int create_and_store_db(
     int max_depth, const Move *basic_moves, const Move *reverse_basic_moves,
     int basic_moves_len
 ) {
-    uint8_t *corner_db = calloc(sizeof(uint8_t), POSSIBLE_CORNER_COMBINATIONS);
-    uint8_t *first_six_edge_db = calloc(sizeof(uint8_t), POSSIBLE_SIX_EDGE_COMBINATIONS);
-    uint8_t *last_six_edge_db = calloc(sizeof(uint8_t), POSSIBLE_SIX_EDGE_COMBINATIONS);
+    uint8_t *corner_db = calloc(POSSIBLE_CORNER_COMBINATIONS, sizeof(uint8_t));
+    uint8_t *first_six_edge_db = calloc(POSSIBLE_SIX_EDGE_COMBINATIONS, sizeof(uint8_t));
+    uint8_t *last_six_edge_db = calloc(POSSIBLE_SIX_EDGE_COMBINATIONS, sizeof(uint8_t));
     RubiksCube *cube = create_rubiks_cube();
     if (corner_db == NULL || first_six_edge_db == NULL || last_six_edge_db == NULL || cube == NULL) {
         return 1;
@@ -106,7 +109,12 @@ int create_and_store_db(
     int depth = 0;
     int prev_moves_indexes[max_depth];
     long long unsigned number_of_nodes_processed = 0;
-    create_db(corner_db, first_six_edge_db, last_six_edge_db, cube, &depth, max_depth, basic_moves, reverse_basic_moves, basic_moves_len, prev_moves_indexes, &number_of_nodes_processed);
+
+    create_db(
+        corner_db, first_six_edge_db, last_six_edge_db, cube, &depth, max_depth,
+        basic_moves, reverse_basic_moves, basic_moves_len, prev_moves_indexes, &number_of_nodes_processed
+    );
+
     RubiksCube *new_cube = create_rubiks_cube();
     if (!is_equal(cube, new_cube)) {
         printf("Database creation failed as the used cube is NOT in the same state as it was before starting to create the database.\n");
@@ -156,7 +164,7 @@ uint8_t * load_db(
     }
 
     begin = clock();
-    uint8_t *db = calloc(sizeof(uint8_t), possible_combinations);
+    uint8_t *db = calloc(possible_combinations, sizeof(uint8_t));
     if (db == NULL) {
         return NULL;
     }
