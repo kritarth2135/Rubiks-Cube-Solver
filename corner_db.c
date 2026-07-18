@@ -36,10 +36,12 @@ void create_corner_db(
             (*no_of_nodes_processed)++;
 
             int value = get_four_bits(corner_db, index);
-            if (value == 0 || value > *depth) {
-                set_four_bits(corner_db, index, *depth);
+            if (value != 0 && value < *depth) {
+                make_move(cube, REVERSE_BASIC_MOVES[i]);
+                continue;
             }
 
+            set_four_bits(corner_db, index, *depth);
             create_corner_db(corner_db, cube, depth, max_depth, no_of_nodes_processed, prev_moves_indexes);
             make_move(cube, REVERSE_BASIC_MOVES[i]);
         }
