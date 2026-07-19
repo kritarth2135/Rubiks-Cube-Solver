@@ -31,7 +31,10 @@ int write_db_to_file(uint8_t *db, int size_of_db, const char *db_name) {
     if (file == NULL) {
         return 1;
     }
-    fwrite(db, size_of_db, 1, file);
+    if (fwrite(db, sizeof(uint8_t), size_of_db, file) != size_of_db) {
+        fclose(file);
+        return 1;
+    }
     fclose(file);
     return 0;
 }
@@ -93,6 +96,9 @@ int create_and_store_db(
         return 2;
     }
     if (write_db_to_file(db, size, db_name) != 0) {
+        free(cube);
+        free(db);
+        free(new_cube);
         return 1;
     }
     printf(
@@ -130,7 +136,11 @@ uint8_t * load_db(
     }
     clock_t begin, end;
     begin = clock();
-    fread(db, sizeof(uint8_t), size, file);
+    if (fread(db, sizeof(uint8_t), size, file) != size) {
+        fclose(file);
+        free(db);
+        return NULL;
+    }
     end = clock();
     printf("Loaded %s in %f seconds.\n", db_name, (double)(end - begin) / CLOCKS_PER_SEC);
 

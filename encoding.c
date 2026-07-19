@@ -25,7 +25,7 @@ const int FACTORIAL[] = {
     479001600
 };
 
-uint8_t NUMBER_OF_ONES_IN_BINARY_REPRESENTATION[(2 << MAX_SIZE) - 1] = {0};
+uint8_t NUMBER_OF_ONES_IN_BINARY_REPRESENTATION[(1 << MAX_SIZE) - 1] = {0};
 bool is_computed = false;
 
 int count_ones(int number) {
@@ -41,7 +41,7 @@ void compute_ones_table(void) {
     if (is_computed) {
         return;
     }
-    for (int i = 0; i < (2 << MAX_SIZE) - 1; i++) {
+    for (int i = 0; i < (1 << MAX_SIZE) - 1; i++) {
         NUMBER_OF_ONES_IN_BINARY_REPRESENTATION[i] = count_ones(i);
     }
     is_computed = true;
