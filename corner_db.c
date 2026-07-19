@@ -36,7 +36,7 @@ void create_corner_db(
             (*no_of_nodes_processed)++;
 
             int value = get_four_bits(corner_db, index);
-            if (value != 0 && value < *depth) {
+            if (value != 0 && value <= *depth) {
                 make_move(cube, REVERSE_BASIC_MOVES[i]);
                 continue;
             }
