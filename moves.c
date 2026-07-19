@@ -465,6 +465,9 @@ int parse_and_make_move(RubiksCube* cube, const char *move_str) {
                     move_type = move_str[2];
                 }
             }
+            if (is_wide == false && len == 3) {
+                return 1;
+            }
 
             if (move_type == '\'') {
                 if (is_wide) {
