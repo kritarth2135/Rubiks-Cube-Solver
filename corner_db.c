@@ -50,7 +50,7 @@ void create_corner_db(
 }
 
 uint8_t * load_corner_db() {
-    uint8_t *db = load_db(CORNER_DB_NAME, MAX_DEPTH, POSSIBLE_CORNER_COMBINATIONS, create_corner_db);
+    uint8_t *db = load_db(CORNER_DB_NAME, CORNER_DB_GENERATION_MAX_DEPTH, POSSIBLE_CORNER_COMBINATIONS, create_corner_db);
     if (db == NULL) {
         return NULL;
     }

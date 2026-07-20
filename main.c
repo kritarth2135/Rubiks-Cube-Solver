@@ -4,6 +4,7 @@
 
 #include "rubiks_cube.h"
 #include "pattern_database.h"
+#include "solver.h"
 
 #define BUFFER_SIZE 50
 
@@ -35,11 +36,43 @@ int main(void) {
     );
 
     while (1) {
-        printf("Enter move ('q' to exit): ");
+        printf("\nEnter move ('a' to solve, 'q' to exit): ");
         get_input(buffer);
         if (buffer[0] == 'q' && buffer[1] == '\0') {
             break;
         }
+
+        if (buffer[0] == 'a' && buffer[1] == '\0') {
+            RubiksCube *copy = copy_cube(cube);
+            RubiksCube *goal = create_rubiks_cube();
+
+            Move solution[SOLVER_MAX_DEPTH];
+            int solution_len = 0;
+            if (solve_cube(copy, goal, corner_db, solution, &solution_len)) {
+                printf("Solution: ");
+                for (int i = 0; i < solution_len; i++) {
+                    printf("%s ", STRING_REPRESENTATION_OF_MOVES[solution[i]]);
+                }
+                printf("\n");
+                free(copy);
+                free(goal);
+            }
+            else {
+                free(copy);
+                free(goal);
+            }
+
+            printf("Apply solution? (y/n): ");
+            char choice = getchar();
+            if (choice == 'y') {
+                for (int i = 0; i < solution_len; i++) {
+                    make_move(cube, solution[i]);
+                }
+            }
+
+            continue;
+        }
+
         if (parse_and_make_move(cube, buffer) != 0) {
             printf("Invalid move!\n");
         }
