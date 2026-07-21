@@ -7,7 +7,7 @@
 #include "rubiks_cube.h"
 #include "pattern_database.h"
 
-int corner_heuristic(RubiksCube *cube, uint8_t *db) {
+int get_heuristic(RubiksCube *cube, uint8_t *db) {
     uint64_t index = encode_corners(cube);
     return get_four_bits(db, index);
 }
@@ -27,7 +27,11 @@ int solve(
             make_move(cube, BASIC_MOVES[i]);
             (*no_of_nodes_processed)++;
 
-            int estimated_cost = *depth + corner_heuristic(cube, corner_db);
+            if (is_equal(cube, goal_state)) {
+                return 1;
+            }
+
+            int estimated_cost = *depth + get_heuristic(cube, corner_db);
             if (estimated_cost > SOLVER_MAX_DEPTH) {
                 make_move(cube, REVERSE_BASIC_MOVES[i]);
                 continue;

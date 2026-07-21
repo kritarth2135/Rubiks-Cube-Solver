@@ -56,18 +56,18 @@ int main(void) {
                 printf("\n");
                 free(copy);
                 free(goal);
+
+                printf("Apply solution? (y/n): ");
+                char choice = getchar();
+                if (choice == 'y') {
+                    for (int i = 0; i < solution_len; i++) {
+                        make_move(cube, solution[i]);
+                    }
+                }
             }
             else {
                 free(copy);
                 free(goal);
-            }
-
-            printf("Apply solution? (y/n): ");
-            char choice = getchar();
-            if (choice == 'y') {
-                for (int i = 0; i < solution_len; i++) {
-                    make_move(cube, solution[i]);
-                }
             }
 
             continue;
