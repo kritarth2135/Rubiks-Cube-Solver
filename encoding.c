@@ -9,7 +9,7 @@
 #define ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS 64  // 2^6
 
 // Precomputed factorials
-const int FACTORIAL[] = {
+const int FACTORIAL[MAX_SIZE + 1] = {
     1,
     1,
     2,
@@ -47,22 +47,22 @@ void compute_ones_table(void) {
     is_computed = true;
 }
 
-int lehmer_idx(int array[], int size) {
-    if (size > MAX_SIZE) {
+uint64_t lehmer_idx(int array[], int size, int N) {
+    if (size > MAX_SIZE || N > MAX_SIZE) {
         return -1;
     }
     compute_ones_table();
     int bit_string = 0; // To mark the permutations that are encountered
     int count_array[size];
 
-    for (int i = 0; i < size; i++) {
-        bit_string |= 1 << (size - 1 - array[i]);
-        count_array[i] = array[i] - NUMBER_OF_ONES_IN_BINARY_REPRESENTATION[bit_string >> (size - array[i])];
+    for (int i = size - 1; i >= 0; i--) {
+        bit_string |= 1 << (N - 1 - array[i]);
+        count_array[i] = NUMBER_OF_ONES_IN_BINARY_REPRESENTATION[bit_string >> (N - array[i])];
     }
 
-    int idx = 0;
+    uint64_t idx = 0;
     for (int i = 0; i < size; i++) {
-        idx += count_array[i] * FACTORIAL[size - 1 - i];
+        idx += count_array[i] * (FACTORIAL[N - 1 - i] / FACTORIAL[N - size]);
     }
     return idx;
 }
@@ -80,7 +80,7 @@ uint64_t encode_centres(RubiksCube *cube) {
     for (int i = 0; i < NUMBER_OF_COLORS; i++) {
         centres[i] = cube->centres[i];
     }
-    return lehmer_idx(centres, NUMBER_OF_COLORS);
+    return lehmer_idx(centres, NUMBER_OF_COLORS, NUMBER_OF_COLORS);
 }
 
 uint64_t encode_corners(RubiksCube *cube) {
@@ -91,15 +91,15 @@ uint64_t encode_corners(RubiksCube *cube) {
         corner_orientations[i] = cube->corner_orientations[i];
     }
     return (
-        (lehmer_idx(corner_positions, NUMBER_OF_CORNERS) * ALL_POSSIBLE_CORNER_ORIENTATIONS) +
+        (lehmer_idx(corner_positions, NUMBER_OF_CORNERS, NUMBER_OF_CORNERS) * ALL_POSSIBLE_CORNER_ORIENTATIONS) +
         to_base_10(corner_orientations, NUMBER_OF_CORNERS - 1, CORNER_SIDES)
     );
 }
 
 uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cubie) {
-    int number_of_edges = end_cubie - start_cubie + 1;
-    int edge_positions[number_of_edges];
-    int edge_orientations[number_of_edges];
+    int size = end_cubie - start_cubie + 1;
+    int edge_positions[size];
+    int edge_orientations[size];
 
     for (int i = 0; i < NUMBER_OF_EDGES; i++) {
         EdgeCubie edge = cube->edge_positions[i];
@@ -109,7 +109,7 @@ uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cub
         }
     }
     return (
-        (lehmer_idx(edge_positions, number_of_edges) * ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS) +
-        to_base_10(edge_orientations, number_of_edges, EDGE_SIDES)
+        (lehmer_idx(edge_positions, size, NUMBER_OF_EDGES) * ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS) +
+        to_base_10(edge_orientations, size, EDGE_SIDES)
     );
 }

@@ -27,12 +27,11 @@ int main(void) {
     print_cube(cube);
     print_cube_arrays(cube);
     printf(
-        // "[%lu, %lu, %lu, %lu]\n",
-        "[%lu, %lu, -, -]\n",
+        "[%lu, %lu, %lu, %lu]\n",
         encode_centres(cube),
-        encode_corners(cube)
-        // encode_edges(cube, UF, BL),
-        // encode_edges(cube, BR, DR)
+        encode_corners(cube),
+        encode_edges(cube, UF, BL),
+        encode_edges(cube, BR, DR)
     );
 
     while (1) {
@@ -80,12 +79,11 @@ int main(void) {
         print_cube(cube);
         print_cube_arrays(cube);
         printf(
-            // "[%lu, %lu, %lu, %lu]\n",
-            "[%lu, %lu, -, -]\n",
+            "[%lu, %lu, %lu, %lu]\n",
             encode_centres(cube),
-            encode_corners(cube)
-            // encode_edges(cube, UF, BL),
-            // encode_edges(cube, BR, DR)
+            encode_corners(cube),
+            encode_edges(cube, UF, BL),
+            encode_edges(cube, BR, DR)
         );
     }
 
