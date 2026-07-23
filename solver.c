@@ -43,6 +43,24 @@ int solve(
         (*depth)++;
         for (int i = 0; i < NUMBER_OF_BASIC_MOVES; i++) {
             prev_moves_indexes[*depth - 1] = i;
+            // Skip moving the same face consecutively
+            if (
+                *depth > 1 &&
+                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == i % NUMBER_OF_FACES
+            ) {
+                continue;
+            }
+            // As moving opposite faces is commutative, we only allow one order to move opposite faces
+            // and forbid the opposite order
+            if (
+                *depth > 1 &&
+                // This condition is required because without it this will also skip moves like Left face move
+                // after the D face move or Front face move after a right face move
+                prev_moves_indexes[*depth - 2] % 2 == 0 &&
+                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == (i % NUMBER_OF_FACES) - 1
+            ) {
+                continue;
+            }
 
             make_move(cube, BASIC_MOVES[i]);
             (*no_of_nodes_processed)++;
@@ -83,7 +101,7 @@ int solve_cube(
     clock_t begin, end;
     begin = clock();
     for (int i = 0; i < SOLVER_MAX_DEPTH; i++) {
-        printf("Trying to find solution at depth: %i\n", i);
+        printf("Trying to find solution at depth: %i\n", i + 1);
         if (solve(cube, goal_state, corner_db, first_edge_db, second_edge_db, &depth, i + 1, &no_of_nodes_processed, prev_moves_indexes)) {
             found_solution = true;
             break;
