@@ -12,8 +12,28 @@ int get_heuristic(RubiksCube *cube, uint8_t *db) {
     return get_four_bits(db, index);
 }
 
+int get_max(int value1, int value2, int value3) {
+    if (value1 > value2) {
+        if (value1 > value3) {
+            return value1;
+        }
+        else {
+            return value3;
+        }
+    }
+    else {
+        if (value2 > value3) {
+            return value2;
+        }
+        else {
+            return value3;
+        }
+    }
+}
+
 int solve(
-    RubiksCube *cube, RubiksCube *goal_state, uint8_t *corner_db, int *depth, int max_depth,
+    RubiksCube *cube, RubiksCube *goal_state, uint8_t *corner_db,
+    uint8_t *first_edge_db, uint8_t *second_edge_db, int *depth, int max_depth,
     long long unsigned *no_of_nodes_processed, int *prev_moves_indexes
 ) {
     if (is_equal(cube, goal_state)) {
@@ -31,13 +51,17 @@ int solve(
                 return 1;
             }
 
-            int estimated_cost = *depth + get_heuristic(cube, corner_db);
+            int estimated_cost = *depth + get_max(
+                get_heuristic(cube, corner_db),
+                get_heuristic(cube, first_edge_db),
+                get_heuristic(cube, second_edge_db)
+            );
             if (estimated_cost > SOLVER_MAX_DEPTH) {
                 make_move(cube, REVERSE_BASIC_MOVES[i]);
                 continue;
             }
 
-            if (solve(cube, goal_state, corner_db, depth, max_depth, no_of_nodes_processed, prev_moves_indexes)) {
+            if (solve(cube, goal_state, corner_db, first_edge_db, second_edge_db, depth, max_depth, no_of_nodes_processed, prev_moves_indexes)) {
                 return 1;
             }
             make_move(cube, REVERSE_BASIC_MOVES[i]);
@@ -48,8 +72,8 @@ int solve(
 }
 
 int solve_cube(
-    RubiksCube *cube, RubiksCube *goal_state, uint8_t *corner_db, Move *solution_array,
-    int *solution_len
+    RubiksCube *cube, RubiksCube *goal_state, uint8_t *corner_db, uint8_t *first_edge_db,
+    uint8_t *second_edge_db, Move *solution_array, int *solution_len
 ) {
     int depth = 0;
     long long unsigned no_of_nodes_processed = 0;
@@ -59,7 +83,8 @@ int solve_cube(
     clock_t begin, end;
     begin = clock();
     for (int i = 0; i < SOLVER_MAX_DEPTH; i++) {
-        if (solve(cube, goal_state, corner_db, &depth, i + 1, &no_of_nodes_processed, prev_moves_indexes)) {
+        printf("Trying to find solution at depth: %i\n", i);
+        if (solve(cube, goal_state, corner_db, first_edge_db, second_edge_db, &depth, i + 1, &no_of_nodes_processed, prev_moves_indexes)) {
             found_solution = true;
             break;
         }

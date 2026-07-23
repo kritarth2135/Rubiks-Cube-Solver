@@ -14,6 +14,7 @@
 #define POSSIBLE_CORNER_COMBINATIONS 88179840 // 8! * 3^7
 #define POSSIBLE_SIX_EDGE_COMBINATIONS 42577920 // 12!/6! * 2^6
 #define CORNER_DB_GENERATION_MAX_DEPTH 11
+#define EDGE_DB_GENERATION_MAX_DEPTH 11
 
 extern const Move BASIC_MOVES[NUMBER_OF_BASIC_MOVES];
 extern const Move REVERSE_BASIC_MOVES[NUMBER_OF_BASIC_MOVES];
@@ -37,5 +38,7 @@ uint8_t * load_db(
 );
 
 uint8_t * load_corner_db();
+uint8_t * load_first_edge_db();
+uint8_t * load_second_edge_db();
 
 #endif

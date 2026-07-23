@@ -21,6 +21,14 @@ int main(void) {
     if (corner_db == NULL) {
         return 1;
     }
+    uint8_t *first_edge_db = load_first_edge_db();
+    if (first_edge_db == NULL) {
+        return 1;
+    }
+    uint8_t *second_edge_db = load_second_edge_db();
+    if (second_edge_db == NULL) {
+        return 1;
+    }
     printf("\n");
 
     char buffer[BUFFER_SIZE];
@@ -47,7 +55,7 @@ int main(void) {
 
             Move solution[SOLVER_MAX_DEPTH];
             int solution_len = 0;
-            if (solve_cube(copy, goal, corner_db, solution, &solution_len)) {
+            if (solve_cube(copy, goal, corner_db, first_edge_db, second_edge_db, solution, &solution_len)) {
                 printf("Solution: ");
                 for (int i = 0; i < solution_len; i++) {
                     printf("%s ", STRING_REPRESENTATION_OF_MOVES[solution[i]]);
@@ -89,8 +97,8 @@ int main(void) {
 
     free(cube);
     free(corner_db);
-    // free(first_six_edge_db);
-    // free(last_six_edge_db);
+    free(first_edge_db);
+    free(second_edge_db);
     return 0;
 }
 
