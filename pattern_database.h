@@ -12,16 +12,16 @@
 
 #define NUMBER_OF_BASIC_MOVES 18
 #define POSSIBLE_CORNER_COMBINATIONS 88179840 // 8! * 3^7
-#define POSSIBLE_SIX_EDGE_COMBINATIONS 42577920 // 12!/6! * 2^6
+#define POSSIBLE_SEVEN_EDGE_COMBINATIONS 510935040 // 12!/5! * 2^7
 #define CORNER_DB_GENERATION_MAX_DEPTH 11
-#define EDGE_DB_GENERATION_MAX_DEPTH 11
+#define EDGE_DB_GENERATION_MAX_DEPTH 10
 
 extern const Move BASIC_MOVES[NUMBER_OF_BASIC_MOVES];
 extern const Move REVERSE_BASIC_MOVES[NUMBER_OF_BASIC_MOVES];
 
 extern const char *CORNER_DB_NAME;
-extern const char *FIRST_SIX_EDGE_DB_NAME;
-extern const char *LAST_SIX_EDGE_DB_NAME;
+extern const char *FIRST_EDGE_DB_NAME;
+extern const char *LAST_EDGE_DB_NAME;
 
 uint64_t encode_centres(RubiksCube *cube);
 uint64_t encode_corners(RubiksCube *cube);

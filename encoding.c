@@ -6,7 +6,7 @@
 
 #define MAX_SIZE 12
 #define ALL_POSSIBLE_CORNER_ORIENTATIONS 2187  // 3^7
-#define ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS 64  // 2^6
+#define ALL_POSSIBLE_SEVEN_EDGE_ORIENTATIONS 128  // 2^7
 
 // Precomputed factorials
 const int FACTORIAL[MAX_SIZE + 1] = {
@@ -109,7 +109,7 @@ uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cub
         }
     }
     return (
-        (lehmer_idx(edge_positions, size, NUMBER_OF_EDGES) * ALL_POSSIBLE_SIX_EDGE_ORIENTATIONS) +
+        (lehmer_idx(edge_positions, size, NUMBER_OF_EDGES) * ALL_POSSIBLE_SEVEN_EDGE_ORIENTATIONS) +
         to_base_10(edge_orientations, size, EDGE_SIDES)
     );
 }

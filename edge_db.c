@@ -34,7 +34,7 @@ int create_edge_db(
 
             make_move(cube, BASIC_MOVES[i]);
             uint64_t index = encode_edges(cube, first_edge, last_edge);
-            if (index >= POSSIBLE_SIX_EDGE_COMBINATIONS) {
+            if (index >= POSSIBLE_SEVEN_EDGE_COMBINATIONS) {
                 return 1;
             }
             (*no_of_nodes_processed)++;
@@ -60,11 +60,11 @@ int create_first_edge_db(
     uint8_t *edge_db, RubiksCube *cube, int *depth, int max_depth,
     long long unsigned *no_of_nodes_processed, int *prev_moves_indexes
 ) {
-    return create_edge_db(edge_db, cube, depth, max_depth, no_of_nodes_processed, prev_moves_indexes, UF, BL);
+    return create_edge_db(edge_db, cube, depth, max_depth, no_of_nodes_processed, prev_moves_indexes, UF, BR);
 }
 
 uint8_t * load_first_edge_db() {
-    uint8_t *db = load_db(FIRST_SIX_EDGE_DB_NAME, EDGE_DB_GENERATION_MAX_DEPTH, POSSIBLE_SIX_EDGE_COMBINATIONS, create_first_edge_db);
+    uint8_t *db = load_db(FIRST_EDGE_DB_NAME, EDGE_DB_GENERATION_MAX_DEPTH, POSSIBLE_SEVEN_EDGE_COMBINATIONS, create_first_edge_db);
     if (db == NULL) {
         return NULL;
     }
@@ -75,11 +75,11 @@ int create_second_edge_db(
     uint8_t *edge_db, RubiksCube *cube, int *depth, int max_depth,
     long long unsigned *no_of_nodes_processed, int *prev_moves_indexes
 ) {
-    return create_edge_db(edge_db, cube, depth, max_depth, no_of_nodes_processed, prev_moves_indexes, BR, DR);
+    return create_edge_db(edge_db, cube, depth, max_depth, no_of_nodes_processed, prev_moves_indexes, BL, DR);
 }
 
 uint8_t * load_second_edge_db() {
-    uint8_t *db = load_db(LAST_SIX_EDGE_DB_NAME, EDGE_DB_GENERATION_MAX_DEPTH, POSSIBLE_SIX_EDGE_COMBINATIONS, create_second_edge_db);
+    uint8_t *db = load_db(LAST_EDGE_DB_NAME, EDGE_DB_GENERATION_MAX_DEPTH, POSSIBLE_SEVEN_EDGE_COMBINATIONS, create_second_edge_db);
     if (db == NULL) {
         return NULL;
     }
