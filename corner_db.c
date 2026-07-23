@@ -4,7 +4,7 @@
 #include "pattern_database.h"
 #include "rubiks_cube.h"
 
-void create_corner_db(
+int create_corner_db(
     uint8_t *corner_db, RubiksCube *cube, int *depth, int max_depth,
     long long unsigned *no_of_nodes_processed, int *prev_moves_indexes
 ) {
@@ -33,6 +33,9 @@ void create_corner_db(
 
             make_move(cube, BASIC_MOVES[i]);
             uint64_t index = encode_corners(cube);
+            if (index >= POSSIBLE_CORNER_COMBINATIONS) {
+                return 1;
+            }
             (*no_of_nodes_processed)++;
 
             int value = get_four_bits(corner_db, index);
@@ -42,11 +45,14 @@ void create_corner_db(
             }
 
             set_four_bits(corner_db, index, *depth);
-            create_corner_db(corner_db, cube, depth, max_depth, no_of_nodes_processed, prev_moves_indexes);
+            if (create_corner_db(corner_db, cube, depth, max_depth, no_of_nodes_processed, prev_moves_indexes) == 1) {
+                return 1;
+            }
             make_move(cube, REVERSE_BASIC_MOVES[i]);
         }
         (*depth)--;
     }
+    return 0;
 }
 
 uint8_t * load_corner_db() {

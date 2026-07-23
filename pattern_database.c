@@ -65,7 +65,7 @@ void set_four_bits(uint8_t *array, uint64_t index, int value) {
 
 int create_and_store_db(
     const char *db_name, int max_depth, uint64_t possible_combinations,
-    void (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
+    int (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
 ) {
     uint64_t size = (possible_combinations / 2) + 1;
     uint8_t *db = calloc(size, sizeof(uint8_t));
@@ -82,7 +82,12 @@ int create_and_store_db(
 
     clock_t begin, end;
     begin = clock();
-    db_creation_fun(db, cube, &depth, max_depth, &no_of_nodes_processed, previous_move_indexes);
+    if (db_creation_fun(db, cube, &depth, max_depth, &no_of_nodes_processed, previous_move_indexes) == 1) {
+        printf("%s creation failed as the function tried to write at an invalid index.\n", db_name);
+        free(cube);
+        free(db);
+        return 1;
+    }
     end = clock();
     RubiksCube *new_cube = create_rubiks_cube();
     if (new_cube == NULL) {
@@ -93,7 +98,7 @@ int create_and_store_db(
         free(cube);
         free(db);
         free(new_cube);
-        return 2;
+        return 1;
     }
     if (write_db_to_file(db, size, db_name) != 0) {
         free(cube);
@@ -116,7 +121,7 @@ int create_and_store_db(
 
 uint8_t * load_db(
     const char *db_name, int max_depth, uint64_t possible_combinations,
-    void (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
+    int (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
 ) {
     FILE * file = fopen(db_name, "rb");
     if (file == NULL) {

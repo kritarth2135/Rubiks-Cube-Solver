@@ -33,7 +33,7 @@ void set_four_bits(uint8_t *array, uint64_t index, int value);
 
 uint8_t * load_db(
     const char *db_name, int max_depth, uint64_t possible_combinations,
-    void (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
+    int (*db_creation_fun)(uint8_t *, RubiksCube *, int *, int, long long unsigned *, int *)
 );
 
 uint8_t * load_corner_db();
