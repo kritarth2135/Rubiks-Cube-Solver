@@ -55,9 +55,9 @@ uint64_t lehmer_idx(int array[], int size, int N) {
     int bit_string = 0; // To mark the permutations that are encountered
     int count_array[size];
 
-    for (int i = size - 1; i >= 0; i--) {
+    for (int i = 0; i < size; i++) {
         bit_string |= 1 << (N - 1 - array[i]);
-        count_array[i] = NUMBER_OF_ONES_IN_BINARY_REPRESENTATION[bit_string >> (N - array[i])];
+        count_array[i] = array[i] - NUMBER_OF_ONES_IN_BINARY_REPRESENTATION[bit_string >> (N - array[i])];
     }
 
     uint64_t idx = 0;
