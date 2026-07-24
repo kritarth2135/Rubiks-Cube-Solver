@@ -7,11 +7,6 @@
 #include "rubiks_cube.h"
 #include "pattern_database.h"
 
-int get_heuristic(RubiksCube *cube, uint8_t *db) {
-    uint64_t index = encode_corners(cube);
-    return get_four_bits(db, index);
-}
-
 int get_max(int value1, int value2, int value3) {
     if (value1 > value2) {
         if (value1 > value3) {
@@ -42,6 +37,11 @@ int solve(
     if (*depth < max_depth) {
         (*depth)++;
         for (int i = 0; i < NUMBER_OF_BASIC_MOVES; i++) {
+            if (*depth == 1) {
+                printf("#");
+                fflush(stdout);
+            }
+
             prev_moves_indexes[*depth - 1] = i;
             // Skip moving the same face consecutively
             if (
@@ -70,9 +70,9 @@ int solve(
             }
 
             int estimated_cost = *depth + get_max(
-                get_heuristic(cube, corner_db),
-                get_heuristic(cube, first_edge_db),
-                get_heuristic(cube, second_edge_db)
+                get_four_bits(corner_db, encode_corners(cube)),
+                get_four_bits(first_edge_db, encode_edges(cube, UF, BR)),
+                get_four_bits(second_edge_db, encode_edges(cube, BL, DR))
             );
             if (estimated_cost > SOLVER_MAX_DEPTH) {
                 make_move(cube, REVERSE_BASIC_MOVES[i]);
@@ -101,7 +101,7 @@ int solve_cube(
     clock_t begin, end;
     begin = clock();
     for (int i = 0; i < SOLVER_MAX_DEPTH; i++) {
-        printf("Trying to find solution at depth: %i\n", i + 1);
+        printf("\nTrying to find solution at depth: %i\n", i + 1);
         if (solve(cube, goal_state, corner_db, first_edge_db, second_edge_db, &depth, i + 1, &no_of_nodes_processed, prev_moves_indexes)) {
             found_solution = true;
             break;
@@ -115,7 +115,7 @@ int solve_cube(
         }
         *solution_len = depth;
         printf(
-            "Solution of lenght %i found in %f seconds. (Processed %llu nodes)\n",
+            "\nSolution of lenght %i found in %f seconds. (Processed %llu nodes)\n",
             depth,
             (double)(end - begin) / CLOCKS_PER_SEC,
             no_of_nodes_processed
@@ -124,7 +124,7 @@ int solve_cube(
     }
     else {
         printf(
-            "Unable to find solution. (Processed %llu nodes in %f seconds)\n",
+            "\nUnable to find solution. (Processed %llu nodes in %f seconds)\n",
             no_of_nodes_processed,
             (double)(end - begin) / CLOCKS_PER_SEC
         );
