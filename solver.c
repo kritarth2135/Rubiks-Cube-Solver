@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "solver.h"
 #include "rubiks_cube.h"
@@ -98,6 +99,11 @@ int solve_cube(
     int prev_moves_indexes[SOLVER_MAX_DEPTH];
     bool found_solution = false;
 
+    RubiksCube *original_state = copy_cube(cube);
+    if (original_state == NULL) {
+        return 0;
+    }
+
     clock_t begin, end;
     begin = clock();
     for (int i = 0; i < SOLVER_MAX_DEPTH; i++) {
@@ -110,6 +116,10 @@ int solve_cube(
     end = clock();
 
     if (found_solution) {
+        if (!is_equal(cube, goal_state)) {
+            printf("\nSolver failed as the cube is in inconsistent state after running the solver.\n");
+            return 0;
+        }
         for (int i = 0; i < depth; i++) {
             solution_array[i] = BASIC_MOVES[prev_moves_indexes[i]];
         }
@@ -120,14 +130,20 @@ int solve_cube(
             (double)(end - begin) / CLOCKS_PER_SEC,
             no_of_nodes_processed
         );
+        free(original_state);
         return 1;
     }
     else {
+        if (!is_equal(cube, original_state)) {
+            printf("\nSolver failed as the cube is in inconsistent state after running the solver.\n");
+            return 0;
+        }
         printf(
             "\nUnable to find solution. (Processed %llu nodes in %f seconds)\n",
             no_of_nodes_processed,
             (double)(end - begin) / CLOCKS_PER_SEC
         );
+        free(original_state);
         return 0;
     }
 }
