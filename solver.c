@@ -29,63 +29,97 @@ int get_max(int value1, int value2, int value3) {
 
 int solve(
     RubiksCube *cube, RubiksCube *goal_state, uint8_t *corner_db,
-    uint8_t *first_edge_db, uint8_t *second_edge_db, int *depth, int max_depth,
+    uint8_t *first_edge_db, uint8_t *second_edge_db, int max_depth,
     long long unsigned *no_of_nodes_processed, int *prev_moves_indexes
 ) {
     if (is_equal(cube, goal_state)) {
         return 1;
     }
-    if (*depth < max_depth) {
-        (*depth)++;
-        for (int i = 0; i < NUMBER_OF_BASIC_MOVES; i++) {
-            if (*depth == 1) {
+
+    int stack[SOLVER_MAX_DEPTH] = {0};
+    int top = 0;
+    int depth = 1;
+    bool popped = false;
+
+    while(top != -1) {
+        bool flag = popped;
+        popped = false;
+        if (!flag) {
+            if (depth == 1) {
                 printf("#");
                 fflush(stdout);
             }
 
-            prev_moves_indexes[*depth - 1] = i;
+            prev_moves_indexes[depth - 1] = stack[top];
             // Skip moving the same face consecutively
             if (
-                *depth > 1 &&
-                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == i % NUMBER_OF_FACES
+                depth > 1 &&
+                prev_moves_indexes[depth - 2] % NUMBER_OF_FACES == stack[top] % NUMBER_OF_FACES
             ) {
+                stack[top]++;
+                if (stack[top] == NUMBER_OF_BASIC_MOVES) {
+                    top--;
+                    depth--;
+                    popped = true;
+                }
                 continue;
             }
             // As moving opposite faces is commutative, we only allow one order to move opposite faces
             // and forbid the opposite order
             if (
-                *depth > 1 &&
+                depth > 1 &&
                 // This condition is required because without it this will also skip moves like Left face move
                 // after the D face move or Front face move after a right face move
-                prev_moves_indexes[*depth - 2] % 2 == 0 &&
-                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == (i % NUMBER_OF_FACES) - 1
+                prev_moves_indexes[depth - 2] % 2 == 0 &&
+                prev_moves_indexes[depth - 2] % NUMBER_OF_FACES == (stack[top] % NUMBER_OF_FACES) - 1
             ) {
+                stack[top]++;
+                if (stack[top] == NUMBER_OF_BASIC_MOVES) {
+                    top--;
+                    depth--;
+                    popped = true;
+                }
                 continue;
             }
 
-            make_move(cube, BASIC_MOVES[i]);
+            make_move(cube, BASIC_MOVES[stack[top]]);
             (*no_of_nodes_processed)++;
 
             if (is_equal(cube, goal_state)) {
-                return 1;
+                return depth;
             }
 
-            int estimated_cost = *depth + get_max(
+            int estimated_cost = depth + get_max(
                 get_four_bits(corner_db, encode_corners(cube)),
                 get_four_bits(first_edge_db, encode_edges(cube, UF, BR)),
                 get_four_bits(second_edge_db, encode_edges(cube, BL, DR))
             );
             if (estimated_cost > SOLVER_MAX_DEPTH) {
-                make_move(cube, REVERSE_BASIC_MOVES[i]);
+                make_move(cube, REVERSE_BASIC_MOVES[stack[top]]);
+                stack[top]++;
+                if (stack[top] == NUMBER_OF_BASIC_MOVES) {
+                    top--;
+                    depth--;
+                    popped = true;
+                }
                 continue;
             }
 
-            if (solve(cube, goal_state, corner_db, first_edge_db, second_edge_db, depth, max_depth, no_of_nodes_processed, prev_moves_indexes)) {
-                return 1;
+            if (depth < max_depth) {
+                stack[++top] = 0;
+                depth++;
+                continue;
             }
-            make_move(cube, REVERSE_BASIC_MOVES[i]);
         }
-        (*depth)--;
+
+        make_move(cube, REVERSE_BASIC_MOVES[stack[top]]);
+
+        stack[top]++;
+        if (stack[top] == NUMBER_OF_BASIC_MOVES) {
+            top--;
+            depth--;
+            popped = true;
+        }
     }
     return 0;
 }
@@ -108,7 +142,7 @@ int solve_cube(
     begin = clock();
     for (int i = 0; i < SOLVER_MAX_DEPTH; i++) {
         printf("\nTrying to find solution at depth: %i\n", i + 1);
-        if (solve(cube, goal_state, corner_db, first_edge_db, second_edge_db, &depth, i + 1, &no_of_nodes_processed, prev_moves_indexes)) {
+        if ((depth = solve(cube, goal_state, corner_db, first_edge_db, second_edge_db, i + 1, &no_of_nodes_processed, prev_moves_indexes))) {
             found_solution = true;
             break;
         }
