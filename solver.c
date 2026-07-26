@@ -94,7 +94,7 @@ int solve(
                 get_four_bits(first_edge_db, encode_edges(cube, UF, BR)),
                 get_four_bits(second_edge_db, encode_edges(cube, BL, DR))
             );
-            if (estimated_cost > SOLVER_MAX_DEPTH) {
+            if (estimated_cost > max_depth) {
                 make_move(cube, REVERSE_BASIC_MOVES[stack[top]]);
                 stack[top]++;
                 if (stack[top] == NUMBER_OF_BASIC_MOVES) {
