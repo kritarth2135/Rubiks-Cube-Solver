@@ -29,17 +29,31 @@ int main(void) {
     if (second_edge_db == NULL) {
         return 1;
     }
+    uint8_t *edge_position_db = load_edge_position_db();
+    if (edge_position_db == NULL) {
+        return 1;
+    }
     printf("\n");
+
+    Move scramble[] = {
+        R_NORMAL, F_TWO, L_NORMAL, B_TWO, D_NORMAL, U_TWO, R_NORMAL, B_PRIME, R_PRIME, F_NORMAL,
+        D_NORMAL, B_NORMAL, R_TWO, L_NORMAL, D_PRIME, R_TWO, L_NORMAL
+    };
+    int scramble_len = 17;
+    for (int i = 0; i < scramble_len; i++) {
+        make_move(cube, scramble[i]);
+    }
 
     char buffer[BUFFER_SIZE];
     print_cube(cube);
     print_cube_arrays(cube);
     printf(
-        "[%lu, %lu, %lu, %lu]\n",
+        "[%lu, %lu, %lu, %lu, %lu]\n",
         encode_centres(cube),
         encode_corners(cube),
         encode_edges(cube, UF, BL),
-        encode_edges(cube, BR, DR)
+        encode_edges(cube, BR, DR),
+        encode_all_edge_positions(cube)
     );
 
     while (1) {
@@ -55,7 +69,7 @@ int main(void) {
 
             Move solution[SOLVER_MAX_DEPTH];
             int solution_len = 0;
-            if (solve_cube(copy, goal, corner_db, first_edge_db, second_edge_db, solution, &solution_len)) {
+            if (solve_cube(copy, goal, corner_db, first_edge_db, second_edge_db, edge_position_db, solution, &solution_len)) {
                 printf("Solution: ");
                 for (int i = 0; i < solution_len; i++) {
                     printf("%s ", STRING_REPRESENTATION_OF_MOVES[solution[i]]);
@@ -87,11 +101,12 @@ int main(void) {
         print_cube(cube);
         print_cube_arrays(cube);
         printf(
-            "[%lu, %lu, %lu, %lu]\n",
+            "[%lu, %lu, %lu, %lu, %lu]\n",
             encode_centres(cube),
             encode_corners(cube),
             encode_edges(cube, UF, BL),
-            encode_edges(cube, BR, DR)
+            encode_edges(cube, BR, DR),
+            encode_all_edge_positions(cube)
         );
     }
 
@@ -99,6 +114,7 @@ int main(void) {
     free(corner_db);
     free(first_edge_db);
     free(second_edge_db);
+    free(edge_position_db);
     return 0;
 }
 

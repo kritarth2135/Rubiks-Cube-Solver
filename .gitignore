@@ -60,3 +60,4 @@ rubiks_cube_solver
 corner_db.bin
 first_edge_db.bin
 last_edge_db.bin
+edge_positions_db.bin

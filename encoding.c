@@ -113,3 +113,11 @@ uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cub
         to_base_10(edge_orientations, size, EDGE_SIDES)
     );
 }
+
+uint64_t encode_all_edge_positions(RubiksCube *cube) {
+    int edge_positions[NUMBER_OF_EDGES];
+    for (int i = 0; i < NUMBER_OF_EDGES; i++) {
+        edge_positions[i] = cube->edge_positions[i];
+    }
+    return lehmer_idx(edge_positions, NUMBER_OF_EDGES, NUMBER_OF_EDGES);
+}

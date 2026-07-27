@@ -13,6 +13,7 @@
 #define NUMBER_OF_BASIC_MOVES 18
 #define POSSIBLE_CORNER_COMBINATIONS 88179840 // 8! * 3^7
 #define POSSIBLE_SEVEN_EDGE_COMBINATIONS 510935040 // 12!/5! * 2^7
+#define POSSIBLE_EDGE_POSISION_COMBINATIONS 479001600 // 12!
 #define CORNER_DB_GENERATION_MAX_DEPTH 11
 #define EDGE_DB_GENERATION_MAX_DEPTH 10
 
@@ -22,10 +23,12 @@ extern const Move REVERSE_BASIC_MOVES[NUMBER_OF_BASIC_MOVES];
 extern const char *CORNER_DB_NAME;
 extern const char *FIRST_EDGE_DB_NAME;
 extern const char *LAST_EDGE_DB_NAME;
+extern const char *EDGE_POSITIONS_DB_NAME;
 
 uint64_t encode_centres(RubiksCube *cube);
 uint64_t encode_corners(RubiksCube *cube);
 uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cubie);
+uint64_t encode_all_edge_positions(RubiksCube *cube);
 
 int write_db_to_file(uint8_t *db, int size_of_db, const char *db_name);
 
@@ -40,5 +43,6 @@ uint8_t * load_db(
 uint8_t * load_corner_db();
 uint8_t * load_first_edge_db();
 uint8_t * load_second_edge_db();
+uint8_t * load_edge_position_db();
 
 #endif

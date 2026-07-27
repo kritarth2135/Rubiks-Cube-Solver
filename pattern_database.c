@@ -23,6 +23,7 @@ const Move REVERSE_BASIC_MOVES[NUMBER_OF_BASIC_MOVES] = {
 const char *CORNER_DB_NAME = "corner_db.bin";
 const char *FIRST_EDGE_DB_NAME = "first_edge_db.bin";
 const char *LAST_EDGE_DB_NAME = "last_edge_db.bin";
+const char *EDGE_POSITIONS_DB_NAME = "edge_positions_db.bin";
 
 const int FOUR_BITS_MASK = 0b1111;
 
