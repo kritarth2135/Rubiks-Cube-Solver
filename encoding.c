@@ -75,13 +75,6 @@ int to_base_10(int array[], int size, int base) {
     return value;
 }
 
-uint64_t encode_centres(RubiksCube *cube) {
-    int centres[NUMBER_OF_COLORS];
-    for (int i = 0; i < NUMBER_OF_COLORS; i++) {
-        centres[i] = cube->centres[i];
-    }
-    return lehmer_idx(centres, NUMBER_OF_COLORS, NUMBER_OF_COLORS);
-}
 
 uint64_t encode_corners(RubiksCube *cube) {
     int corner_positions[NUMBER_OF_CORNERS];
@@ -112,6 +105,14 @@ uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cub
         (lehmer_idx(edge_positions, size, NUMBER_OF_EDGES) * ALL_POSSIBLE_SEVEN_EDGE_ORIENTATIONS) +
         to_base_10(edge_orientations, size, EDGE_SIDES)
     );
+}
+
+uint64_t encode_first_seven_edges(RubiksCube* cube) {
+    return encode_edges(cube, UF, BR);
+}
+
+uint64_t encode_last_seven_edges(RubiksCube* cube) {
+    return encode_edges(cube, BL, DR);
 }
 
 uint64_t encode_all_edge_positions(RubiksCube *cube) {

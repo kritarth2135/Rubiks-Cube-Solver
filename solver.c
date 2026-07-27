@@ -86,8 +86,8 @@ int solve(
 
             int estimated_cost = depth + get_max(
                 get_four_bits(corner_db, encode_corners(cube)),
-                get_four_bits(first_edge_db, encode_edges(cube, UF, BR)),
-                get_four_bits(second_edge_db, encode_edges(cube, BL, DR)),
+                get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
+                get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
                 get_four_bits(edge_position_db, encode_all_edge_positions(cube))
             );
             if (estimated_cost > max_depth) {

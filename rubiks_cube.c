@@ -3,6 +3,9 @@
 
 #include "rubiks_cube.h"
 
+#define FACE_DIMENSION 3
+
+
 typedef enum {
     W = 'W',
     G = 'G',
@@ -23,7 +26,6 @@ typedef enum {
     EDGE_DOWN,
 } EdgeStickerPosition;
 
-const int FACE_DIMENSION = 3;
 
 // This is the default orientation of the cube faces in order
 // up, left, front, right, back, down
@@ -69,6 +71,7 @@ const Position EDGE_CUBIE_STICKER_POSITIONS[NUMBER_OF_EDGES][EDGE_SIDES] = {
     {DOWN, FRONT}, {DOWN, LEFT}, {DOWN, BACK}, {DOWN, RIGHT}
 };
 
+
 RubiksCube * create_rubiks_cube(void) {
     // Default color orientation is according to solved_centre_positions
 
@@ -80,12 +83,10 @@ RubiksCube * create_rubiks_cube(void) {
     for (int i = 0; i < NUMBER_OF_COLORS; i++) {
         cube->centres[i] = solved_centre_positions[i];
     }
-
     for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
         cube->corner_positions[i] = solved_corner_positions[i];
         cube->corner_orientations[i] = solved_corner_orientaitons[i];
     }
-
     for (int i = 0; i < NUMBER_OF_EDGES; i++) {
         cube->edge_positions[i] = solved_edges_positions[i];
         cube->edge_orientations[i] = solved_edges_orientations[i];
@@ -103,12 +104,10 @@ RubiksCube * copy_cube(RubiksCube *cube) {
     for (int i = 0; i < NUMBER_OF_COLORS; i++) {
         copy->centres[i] = cube->centres[i];
     }
-
     for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
         copy->corner_positions[i] = cube->corner_positions[i];
         copy->corner_orientations[i] = cube->corner_orientations[i];
     }
-
     for (int i = 0; i < NUMBER_OF_EDGES; i++) {
         copy->edge_positions[i] = cube->edge_positions[i];
         copy->edge_orientations[i] = cube->edge_orientations[i];
@@ -142,13 +141,23 @@ int is_equal(RubiksCube *cube1, RubiksCube *cube2) {
     return 1;
 }
 
+
 Sticker get_corner_sticker(RubiksCube *cube, CornerCubie cubie, CornerStickerPosition position) {
-    return STICKERS[solved_centre_positions[CORNER_CUBIE_STICKER_POSITIONS[cube->corner_positions[cubie]][(position + cube->corner_orientations[cubie]) % CORNER_SIDES]]];
+    return STICKERS[
+        solved_centre_positions[CORNER_CUBIE_STICKER_POSITIONS[cube->corner_positions[cubie]
+    ][
+        (position + cube->corner_orientations[cubie]) % CORNER_SIDES]]
+    ];
 }
 
 Sticker get_edge_sticker(RubiksCube *cube, EdgeCubie cubie, EdgeStickerPosition position) {
-    return STICKERS[solved_centre_positions[EDGE_CUBIE_STICKER_POSITIONS[cube->edge_positions[cubie]][(position + cube->edge_orientations[cubie]) % EDGE_SIDES]]];
+    return STICKERS[
+        solved_centre_positions[EDGE_CUBIE_STICKER_POSITIONS[cube->edge_positions[cubie]
+    ][
+        (position + cube->edge_orientations[cubie]) % EDGE_SIDES]]
+    ];
 }
+
 
 // Using the cubie representation to get all the facets
 void generate_stickers(RubiksCube *cube, Sticker stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION]) {
@@ -212,6 +221,7 @@ void generate_stickers(RubiksCube *cube, Sticker stickers[NUMBER_OF_COLORS][FACE
     stickers[DOWN][2][1] = get_edge_sticker(cube, DB, EDGE_TOP);
     stickers[DOWN][2][2] = get_corner_sticker(cube, DBR, CORNER_TOP);
 }
+
 
 void print_cube(RubiksCube *cube) {
     Sticker stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION];

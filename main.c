@@ -1,6 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "rubiks_cube.h"
 #include "pattern_database.h"
@@ -37,9 +37,9 @@ int main(void) {
 
     Move scramble[] = {
         R_NORMAL, F_TWO, L_NORMAL, B_TWO, D_NORMAL, U_TWO, R_NORMAL, B_PRIME, R_PRIME, F_NORMAL,
-        D_NORMAL, B_NORMAL, R_TWO, L_NORMAL, D_PRIME, R_TWO, L_NORMAL
+        D_NORMAL, B_NORMAL, R_TWO, L_NORMAL//, D_PRIME, R_TWO, L_NORMAL
     };
-    int scramble_len = 17;
+    int scramble_len = 14;
     for (int i = 0; i < scramble_len; i++) {
         make_move(cube, scramble[i]);
     }
@@ -48,11 +48,10 @@ int main(void) {
     print_cube(cube);
     print_cube_arrays(cube);
     printf(
-        "[%lu, %lu, %lu, %lu, %lu]\n",
-        encode_centres(cube),
+        "[%lu, %lu, %lu, %lu]\n",
         encode_corners(cube),
-        encode_edges(cube, UF, BL),
-        encode_edges(cube, BR, DR),
+        encode_first_seven_edges(cube),
+        encode_last_seven_edges(cube),
         encode_all_edge_positions(cube)
     );
 
@@ -101,11 +100,10 @@ int main(void) {
         print_cube(cube);
         print_cube_arrays(cube);
         printf(
-            "[%lu, %lu, %lu, %lu, %lu]\n",
-            encode_centres(cube),
+            "[%lu, %lu, %lu, %lu]\n",
             encode_corners(cube),
-            encode_edges(cube, UF, BL),
-            encode_edges(cube, BR, DR),
+            encode_first_seven_edges(cube),
+            encode_last_seven_edges(cube),
             encode_all_edge_positions(cube)
         );
     }

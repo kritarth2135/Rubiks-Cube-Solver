@@ -77,6 +77,7 @@ typedef enum {
     Z_NORMAL, Z_PRIME, Z_TWO,
 } Move;
 
+
 extern const char *STRING_REPRESENTATION_OF_MOVES[];
 
 extern const Color solved_centre_pattern[NUMBER_OF_COLORS];
@@ -84,6 +85,7 @@ extern const CornerCubie solved_corner_positions[NUMBER_OF_CORNERS];
 extern const CornerOrientation solved_corner_orientaitons[NUMBER_OF_CORNERS];
 extern const EdgeCubie solved_edges_positions[NUMBER_OF_EDGES];
 extern const EdgeOrientation solved_edges_orientations[NUMBER_OF_EDGES];
+
 
 RubiksCube * create_rubiks_cube(void);
 RubiksCube * copy_cube(RubiksCube *cube);

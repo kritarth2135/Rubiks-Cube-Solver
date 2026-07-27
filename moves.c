@@ -13,6 +13,7 @@
 #define NUMBER_OF_MIDDLE_MOVES 3
 #define NUMBER_OF_CUBE_MOVES 3
 
+
 typedef enum {
     U,
     L,
@@ -33,6 +34,7 @@ typedef enum {
     Y,
     Z
 } CubeMove;
+
 
 const char *STRING_REPRESENTATION_OF_MOVES[] = {
     "U", "U'", "U2", "Uw", "Uw'", "Uw2",
