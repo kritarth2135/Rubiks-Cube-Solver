@@ -5,7 +5,7 @@
 
 #include "rubiks_cube.h"
 
-#define SOLVER_MAX_DEPTH 18
+#define SOLVER_MAX_DEPTH 20
 
 int solve_cube(
     RubiksCube *cube, RubiksCube *goal_state, uint8_t *corner_db, uint8_t *first_edge_db,
