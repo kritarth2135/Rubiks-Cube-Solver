@@ -57,6 +57,29 @@ int solve(
         indexes[i] = i;
         make_move(cube, BASIC_MOVES[i]);
 
+        // Skip moving the same face consecutively
+        if (
+            *depth > 0 &&
+            prev_moves_indexes[*depth - 1] % NUMBER_OF_FACES == i % NUMBER_OF_FACES
+        ) {
+            heuristic[i] = MAX_MOVES_TO_SOLVE_CUBE;
+            make_move(cube, REVERSE_BASIC_MOVES[i]);
+            continue;
+        }
+        // As moving opposite faces is commutative, we only allow one order to move opposite faces
+        // and forbid the opposite order
+        if (
+            *depth > 0 &&
+            // This condition is required because without it this will also skip moves like Left face move
+            // after the D face move or Front face move after a right face move
+            prev_moves_indexes[*depth - 1] % 2 == 0 &&
+            prev_moves_indexes[*depth - 1] % NUMBER_OF_FACES == (i % NUMBER_OF_FACES) - 1
+        ) {
+            heuristic[i] = MAX_MOVES_TO_SOLVE_CUBE;
+            make_move(cube, REVERSE_BASIC_MOVES[i]);
+            continue;
+        }
+
         corner_indexes[i] = encode_corners(cube);
         first_edge_indexes[i] = encode_first_seven_edges(cube);
         second_edge_indexes[i] = encode_last_seven_edges(cube);
@@ -81,22 +104,7 @@ int solve(
             }
 
             prev_moves_indexes[*depth - 1] = indexes[i];
-            // Skip moving the same face consecutively
-            if (
-                *depth > 1 &&
-                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == indexes[i] % NUMBER_OF_FACES
-            ) {
-                continue;
-            }
-            // As moving opposite faces is commutative, we only allow one order to move opposite faces
-            // and forbid the opposite order
-            if (
-                *depth > 1 &&
-                // This condition is required because without it this will also skip moves like Left face move
-                // after the D face move or Front face move after a right face move
-                prev_moves_indexes[*depth - 2] % 2 == 0 &&
-                prev_moves_indexes[*depth - 2] % NUMBER_OF_FACES == (indexes[i] % NUMBER_OF_FACES) - 1
-            ) {
+            if (heuristic[i] == MAX_MOVES_TO_SOLVE_CUBE) {
                 continue;
             }
 
