@@ -29,7 +29,7 @@ typedef enum {
 
 // This is the default orientation of the cube faces in order
 // up, left, front, right, back, down
-const Color solved_centre_positions[NUMBER_OF_COLORS] = {
+const Color default_centre_positions[NUMBER_OF_COLORS] = {
     WHITE, ORANGE, GREEN, RED, BLUE, YELLOW
 };
 
@@ -81,7 +81,7 @@ RubiksCube * create_rubiks_cube(void) {
     }
 
     for (int i = 0; i < NUMBER_OF_COLORS; i++) {
-        cube->centres[i] = solved_centre_positions[i];
+        cube->centres[i] = default_centre_positions[i];
     }
     for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
         cube->corner_positions[i] = solved_corner_positions[i];
@@ -117,11 +117,6 @@ RubiksCube * copy_cube(RubiksCube *cube) {
 }
 
 int is_equal(RubiksCube *cube1, RubiksCube *cube2) {
-    for (int i = 0; i < NUMBER_OF_COLORS; i++) {
-        if (cube1->centres[i] != cube2->centres[i]) {
-            return 0;
-        };
-    }
     for (int i = 0; i < NUMBER_OF_CORNERS; i++) {
         if (cube1->corner_positions[i] != cube2->corner_positions[i]) {
             return 0;
@@ -144,7 +139,7 @@ int is_equal(RubiksCube *cube1, RubiksCube *cube2) {
 
 Sticker get_corner_sticker(RubiksCube *cube, CornerCubie cubie, CornerStickerPosition position) {
     return STICKERS[
-        solved_centre_positions[CORNER_CUBIE_STICKER_POSITIONS[cube->corner_positions[cubie]
+        cube->centres[CORNER_CUBIE_STICKER_POSITIONS[cube->corner_positions[cubie]
     ][
         (position + cube->corner_orientations[cubie]) % CORNER_SIDES]]
     ];
@@ -152,7 +147,7 @@ Sticker get_corner_sticker(RubiksCube *cube, CornerCubie cubie, CornerStickerPos
 
 Sticker get_edge_sticker(RubiksCube *cube, EdgeCubie cubie, EdgeStickerPosition position) {
     return STICKERS[
-        solved_centre_positions[EDGE_CUBIE_STICKER_POSITIONS[cube->edge_positions[cubie]
+        cube->centres[EDGE_CUBIE_STICKER_POSITIONS[cube->edge_positions[cubie]
     ][
         (position + cube->edge_orientations[cubie]) % EDGE_SIDES]]
     ];

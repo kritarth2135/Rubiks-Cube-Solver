@@ -51,7 +51,7 @@ const char *STRING_REPRESENTATION_OF_MOVES[] = {
     "z", "z'", "z2",
 };
 
-const CornerCubie NORMAL_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
+const CornerCubie NORMAL_CORNERS[NUMBER_OF_FACES][CORNERS_IN_FACE] = {
     {UFL, UFR, UBR, UBL},
     {UFL, UBL, DBL, DFL},
     {UFL, DFL, DFR, UFR},
@@ -60,7 +60,7 @@ const CornerCubie NORMAL_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {DFL, DBL, DBR, DFR}
 };
 
-const EdgeCubie NORMAL_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
+const EdgeCubie NORMAL_EDGES[NUMBER_OF_FACES][EDGES_IN_FACE] = {
     {UF, UR, UB, UL},
     {UL, BL, DL, FL},
     {UF, FL, DF, FR},
@@ -69,7 +69,7 @@ const EdgeCubie NORMAL_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
     {DF, DL, DB, DR}
 };
 
-const CornerCubie PRIME_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
+const CornerCubie PRIME_CORNERS[NUMBER_OF_FACES][CORNERS_IN_FACE] = {
     {UFL, UBL, UBR, UFR},
     {UFL, DFL, DBL, UBL},
     {UFL, UFR, DFR, DFL},
@@ -78,7 +78,7 @@ const CornerCubie PRIME_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {DFL, DFR, DBR, DBL}
 };
 
-const EdgeCubie PRIME_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
+const EdgeCubie PRIME_EDGES[NUMBER_OF_FACES][EDGES_IN_FACE] = {
     {UF, UL, UB, UR},
     {UL, FL, DL, BL},
     {UF, FR, DF, FL},
@@ -87,7 +87,7 @@ const EdgeCubie PRIME_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
     {DF, DR, DB, DL}
 };
 
-const CornerOrientation TWISTS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
+const CornerOrientation TWISTS[NUMBER_OF_FACES][CORNERS_IN_FACE] = {
     {},
     {LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST},
     {RIGHT_TWIST, LEFT_TWIST, RIGHT_TWIST, LEFT_TWIST},
@@ -96,27 +96,15 @@ const CornerOrientation TWISTS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {}
 };
 
-const EdgeCubie MIDDLE_NORMAL_EDGES[NUMBER_OF_MIDDLE_MOVES][EDGES_IN_FACE] = {
-    {UF, UB, DB, DF},
-    {FL, BL, BR, FR},
-    {UL, DL, DR, UR}
-};
-
-const Position MIDDLE_NORMAL_CENTRES[NUMBER_OF_MIDDLE_MOVES][CENTRES_IN_MIDDLE_LAYER] = {
-    {FRONT, UP, BACK, DOWN},
-    {FRONT, LEFT, BACK, RIGHT},
+const Position NORMAL_CENTRES[NUMBER_OF_CUBE_MOVES][CENTRES_IN_MIDDLE_LAYER] = {
+    {UP, FRONT, DOWN, BACK},
+    {FRONT, RIGHT, BACK, LEFT},
     {UP, LEFT, DOWN, RIGHT}
 };
 
-const EdgeCubie MIDDLE_PRIME_EDGES[NUMBER_OF_MIDDLE_MOVES][EDGES_IN_FACE] = {
-    {UF, DF, DB, UB},
-    {FL, FR, BR, BL},
-    {UL, UR, DR, DL}
-};
-
-const Position MIDDLE_PRIME_CENTRES[NUMBER_OF_MIDDLE_MOVES][CENTRES_IN_MIDDLE_LAYER] = {
-    {FRONT, DOWN, BACK, UP},
-    {FRONT, RIGHT, BACK, LEFT},
+const Position PRIME_CENTRES[NUMBER_OF_CUBE_MOVES][CENTRES_IN_MIDDLE_LAYER] = {
+    {UP, BACK, DOWN, FRONT},
+    {FRONT, LEFT, BACK, RIGHT},
     {UP, RIGHT, DOWN, LEFT}
 };
 
@@ -229,13 +217,43 @@ void double_face_move(RubiksCube *cube, FaceMove move) {
 }
 
 void normal_middle_move(RubiksCube *cube, MiddleMove move) {
-    cycle_four_edges_with_flipping(cube, MIDDLE_NORMAL_EDGES[move]);
-    cycle_four_centres(cube, MIDDLE_NORMAL_CENTRES[move]);
+    switch (move) {
+        case M:
+            cycle_four_centres(cube, PRIME_CENTRES[X]);
+            prime_face_move(cube, L);
+            normal_face_move(cube, R);
+            break;
+        case E:
+            cycle_four_centres(cube, PRIME_CENTRES[Y]);
+            normal_face_move(cube, U);
+            prime_face_move(cube, D);
+            break;
+        case S:
+            cycle_four_centres(cube, NORMAL_CENTRES[Z]);
+            prime_face_move(cube, F);
+            normal_face_move(cube, B);
+            break;
+    }
 }
 
 void prime_middle_move(RubiksCube *cube, MiddleMove move) {
-    cycle_four_edges_with_flipping(cube, MIDDLE_PRIME_EDGES[move]);
-    cycle_four_centres(cube, MIDDLE_PRIME_CENTRES[move]);
+    switch (move) {
+        case M:
+            cycle_four_centres(cube, NORMAL_CENTRES[X]);
+            normal_face_move(cube, L);
+            prime_face_move(cube, R);
+            break;
+        case E:
+            cycle_four_centres(cube, NORMAL_CENTRES[Y]);
+            prime_face_move(cube, U);
+            normal_face_move(cube, D);
+            break;
+        case S:
+            cycle_four_centres(cube, PRIME_CENTRES[Z]);
+            normal_face_move(cube, F);
+            prime_face_move(cube, B);
+            break;
+    }
 }
 
 void double_middle_move(RubiksCube *cube, MiddleMove move) {
@@ -244,49 +262,59 @@ void double_middle_move(RubiksCube *cube, MiddleMove move) {
 }
 
 void wide_face_move(RubiksCube *cube, FaceMove move) {
-    normal_face_move(cube, move);
     switch (move) {
         case U:
-            prime_middle_move(cube, E);
-            break;
-        case L:
-            normal_middle_move(cube, M);
-            break;
-        case F:
-            normal_middle_move(cube, S);
-            break;
-        case R:
-            prime_middle_move(cube, M);
-            break;
-        case B:
-            prime_middle_move(cube, S);
+            cycle_four_centres(cube, NORMAL_CENTRES[Y]);
+            normal_face_move(cube, D);
             break;
         case D:
-            normal_middle_move(cube, E);
+            cycle_four_centres(cube, PRIME_CENTRES[Y]);
+            normal_face_move(cube, U);
+            break;
+        case L:
+            cycle_four_centres(cube, PRIME_CENTRES[X]);
+            normal_face_move(cube, R);
+            break;
+        case R:
+            cycle_four_centres(cube, NORMAL_CENTRES[X]);
+            normal_face_move(cube, L);
+            break;
+        case F:
+            cycle_four_centres(cube, NORMAL_CENTRES[Z]);
+            normal_face_move(cube, B);
+            break;
+        case B:
+            cycle_four_centres(cube, PRIME_CENTRES[Z]);
+            normal_face_move(cube, F);
             break;
     }
 }
 
 void wide_prime_face_move(RubiksCube *cube, FaceMove move) {
-    prime_face_move(cube, move);
     switch (move) {
         case U:
-            normal_middle_move(cube, E);
-            break;
-        case L:
-            prime_middle_move(cube, M);
-            break;
-        case F:
-            prime_middle_move(cube, S);
-            break;
-        case R:
-            normal_middle_move(cube, M);
-            break;
-        case B:
-            normal_middle_move(cube, S);
+            cycle_four_centres(cube, PRIME_CENTRES[Y]);
+            prime_face_move(cube, D);
             break;
         case D:
-            prime_middle_move(cube, E);
+            cycle_four_centres(cube, NORMAL_CENTRES[Y]);
+            prime_face_move(cube, U);
+            break;
+        case L:
+            cycle_four_centres(cube, NORMAL_CENTRES[X]);
+            prime_face_move(cube, R);
+            break;
+        case R:
+            cycle_four_centres(cube, PRIME_CENTRES[X]);
+            prime_face_move(cube, L);
+            break;
+        case F:
+            cycle_four_centres(cube, PRIME_CENTRES[Z]);
+            prime_face_move(cube, B);
+            break;
+        case B:
+            cycle_four_centres(cube, NORMAL_CENTRES[Z]);
+            prime_face_move(cube, F);
             break;
     }
 }
@@ -297,43 +325,11 @@ void double_wide_face_move(RubiksCube *cube, FaceMove move) {
 }
 
 void normal_cube_move(RubiksCube *cube, CubeMove move) {
-    switch (move) {
-        case X:
-            prime_face_move(cube, L);
-            prime_middle_move(cube, M);
-            normal_face_move(cube, R);
-            break;
-        case Y:
-            normal_face_move(cube, U);
-            prime_middle_move(cube, E);
-            prime_face_move(cube, D);
-            break;
-        case Z:
-            normal_face_move(cube, F);
-            normal_middle_move(cube, S);
-            prime_face_move(cube, B);
-            break;
-    }
+    cycle_four_centres(cube, NORMAL_CENTRES[move]);
 }
 
 void prime_cube_move(RubiksCube *cube, CubeMove move) {
-    switch (move) {
-        case X:
-            normal_face_move(cube, L);
-            normal_middle_move(cube, M);
-            prime_face_move(cube, R);
-            break;
-        case Y:
-            prime_face_move(cube, U);
-            normal_middle_move(cube, E);
-            normal_face_move(cube, D);
-            break;
-        case Z:
-            prime_face_move(cube, F);
-            prime_middle_move(cube, S);
-            normal_face_move(cube, B);
-            break;
-    }
+    cycle_four_centres(cube, PRIME_CENTRES[move]);
 }
 
 void double_cube_move(RubiksCube *cube, CubeMove move) {
