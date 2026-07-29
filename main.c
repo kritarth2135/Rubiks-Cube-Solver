@@ -37,9 +37,9 @@ int main(void) {
 
     Move scramble[] = {
         R_NORMAL, F_TWO, L_NORMAL, B_TWO, D_NORMAL, U_TWO, R_NORMAL, B_PRIME, R_PRIME, F_NORMAL,
-        D_NORMAL, B_NORMAL, R_TWO, L_NORMAL//, D_PRIME, R_TWO, L_NORMAL
+        D_NORMAL, B_NORMAL, R_TWO, L_NORMAL, D_PRIME, R_TWO, L_NORMAL
     };
-    int scramble_len = 14;
+    int scramble_len = 17;
     for (int i = 0; i < scramble_len; i++) {
         make_move(cube, scramble[i]);
     }
@@ -48,11 +48,15 @@ int main(void) {
     print_cube(cube);
     print_cube_arrays(cube);
     printf(
-        "[%lu, %lu, %lu, %lu]\n",
+        "[[%lu]%i, [%lu]%i, [%lu]%i, [%lu]%i]\n",
         encode_corners(cube),
+        get_four_bits(corner_db, encode_corners(cube)),
         encode_first_seven_edges(cube),
+        get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
         encode_last_seven_edges(cube),
-        encode_all_edge_positions(cube)
+        get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
+        encode_all_edge_positions(cube),
+        get_four_bits(edge_position_db, encode_all_edge_positions(cube))
     );
 
     while (1) {
@@ -100,11 +104,15 @@ int main(void) {
         print_cube(cube);
         print_cube_arrays(cube);
         printf(
-            "[%lu, %lu, %lu, %lu]\n",
+            "[[%lu]%i, [%lu]%i, [%lu]%i, [%lu]%i]\n",
             encode_corners(cube),
+            get_four_bits(corner_db, encode_corners(cube)),
             encode_first_seven_edges(cube),
+            get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
             encode_last_seven_edges(cube),
-            encode_all_edge_positions(cube)
+            get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
+            encode_all_edge_positions(cube),
+            get_four_bits(edge_position_db, encode_all_edge_positions(cube))
         );
     }
 

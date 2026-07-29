@@ -19,8 +19,8 @@ void insertion_sort(int *value_array, int *key_array, int size) {
             value_array[j + 1] = value_array[j];
             j--;
         }
-        key_array[j] = key;
-        value_array[j] = value;
+        key_array[j + 1] = key;
+        value_array[j + 1] = value;
     }
 }
 
@@ -43,18 +43,34 @@ int solve(
     uint8_t *first_edge_db, uint8_t *second_edge_db, int *depth, int max_depth,
     long long unsigned *no_of_nodes_processed, int *prev_moves_indexes
 ) {
+    // These two arrays will be sorted
     int indexes[NUMBER_OF_BASIC_MOVES] = {0};
-    int costs[NUMBER_OF_BASIC_MOVES] = {0};
+    int heuristic[NUMBER_OF_BASIC_MOVES] = {0};
+
+    // These four arrays will be sorted
+    uint64_t corner_indexes[NUMBER_OF_BASIC_MOVES] = {0};
+    uint64_t first_edge_indexes[NUMBER_OF_BASIC_MOVES] = {0};
+    uint64_t second_edge_indexes[NUMBER_OF_BASIC_MOVES] = {0};
+    uint64_t edge_position_indexes[NUMBER_OF_BASIC_MOVES] = {0};
+
     for (int i = 0; i < NUMBER_OF_BASIC_MOVES; i++) {
         indexes[i] = i;
-        costs[i] = get_max(
-            get_four_bits(corner_db, encode_corners(cube)),
-            get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
-            get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
-            get_four_bits(edge_position_db, encode_all_edge_positions(cube))
+        make_move(cube, BASIC_MOVES[i]);
+
+        corner_indexes[i] = encode_corners(cube);
+        first_edge_indexes[i] = encode_first_seven_edges(cube);
+        second_edge_indexes[i] = encode_last_seven_edges(cube);
+        edge_position_indexes[i] = encode_all_edge_positions(cube);
+
+        heuristic[i] = get_max(
+            get_four_bits(corner_db, corner_indexes[i]),
+            get_four_bits(first_edge_db, first_edge_indexes[i]),
+            get_four_bits(second_edge_db, second_edge_indexes[i]),
+            get_four_bits(edge_position_db, edge_position_indexes[i])
         );
+        make_move(cube, REVERSE_BASIC_MOVES[i]);
     }
-    insertion_sort(indexes, costs, NUMBER_OF_BASIC_MOVES);
+    insertion_sort(indexes, heuristic, NUMBER_OF_BASIC_MOVES);
 
     if (*depth < max_depth) {
         (*depth)++;
@@ -91,12 +107,7 @@ int solve(
                 return 1;
             }
 
-            int estimated_cost = *depth + get_max(
-                get_four_bits(corner_db, encode_corners(cube)),
-                get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
-                get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
-                get_four_bits(edge_position_db, encode_all_edge_positions(cube))
-            );
+            int estimated_cost = *depth + heuristic[i];
             if (estimated_cost > max_depth) {
                 make_move(cube, REVERSE_BASIC_MOVES[indexes[i]]);
                 continue;
@@ -154,7 +165,7 @@ int solve_cube(
 
     if (found_solution) {
         if (!is_equal(cube, goal_state)) {
-            printf("\nSolver failed as the cube is in inconsistent state after running the solver.\n");
+            printf("\nSolver failed as the cube is in inconsistent state after finding the solution.\n");
             return 0;
         }
         for (int i = 0; i < depth; i++) {
