@@ -2,7 +2,7 @@ CC = clang
 CFLAGS = -Wall -Werror -std=c23 -g
 LIBS =
 
-OBJECTS = main.o rubiks_cube.o moves.o encoding.o pattern_database.o databases.o solver.o
+OBJECTS = main.o rubiks_cube.o moves.o encoding.o pattern_database.o databases.o solver.o korfs_solver.o
 
 rubiks_cube_solver: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o rubiks_cube_solver $(LIBS)

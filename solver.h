@@ -8,7 +8,10 @@
 #define MAX_MOVES_TO_SOLVE_CUBE 20
 #define SOLVER_MAX_DEPTH 20
 
-int solve_cube(
+void insertion_sort(int *value_array, int *key_array, int size);
+int get_max(int value1, int value2, int value3, int value4);
+
+int korfs_solver(
     RubiksCube *cube, RubiksCube *goal_state, uint8_t *corner_db, uint8_t *first_edge_db,
     uint8_t *second_edge_db, uint8_t *edge_position_db, Move *solution_array, int *solution_len
 );

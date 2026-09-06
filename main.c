@@ -39,7 +39,7 @@ int main(void) {
         R_NORMAL, F_TWO, L_NORMAL, B_TWO, D_NORMAL, U_TWO, R_NORMAL, B_PRIME, R_PRIME, F_NORMAL,
         D_NORMAL, B_NORMAL, R_TWO, L_NORMAL, D_PRIME, R_TWO, L_NORMAL
     };
-    int scramble_len = 17;
+    int scramble_len = 0;
     for (int i = 0; i < scramble_len; i++) {
         make_move(cube, scramble[i]);
     }
@@ -72,7 +72,7 @@ int main(void) {
 
             Move solution[SOLVER_MAX_DEPTH];
             int solution_len = 0;
-            if (solve_cube(copy, goal, corner_db, first_edge_db, second_edge_db, edge_position_db, solution, &solution_len)) {
+            if (korfs_solver(copy, goal, corner_db, first_edge_db, second_edge_db, edge_position_db, solution, &solution_len)) {
                 printf("Solution: ");
                 for (int i = 0; i < solution_len; i++) {
                     printf("%s ", STRING_REPRESENTATION_OF_MOVES[solution[i]]);
