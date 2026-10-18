@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "rubiks_cube.h"
+#include "moves.h"
 
 #define MAX_MOVES_TO_SOLVE_CUBE 20
 #define SOLVER_MAX_DEPTH 20

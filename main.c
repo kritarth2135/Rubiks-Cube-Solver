@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "rubiks_cube.h"
+#include "moves.h"
 #include "pattern_database.h"
 #include "solver.h"
 

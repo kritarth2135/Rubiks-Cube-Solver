@@ -5,6 +5,7 @@
 
 #include "pattern_database.h"
 #include "rubiks_cube.h"
+#include "moves.h"
 
 
 // The order of the moves in these two arrays matter as some of the conditions depend on the

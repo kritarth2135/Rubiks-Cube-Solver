@@ -57,7 +57,5 @@ dkms.conf
 .vscode
 rubiks_cube_solver
 
-corner_db.bin
-first_edge_db.bin
-second_edge_db.bin
-edge_positions_db.bin
+# custom databases
+*.bin

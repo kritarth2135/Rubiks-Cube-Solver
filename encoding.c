@@ -85,17 +85,17 @@ uint64_t encode_corners(RubiksCube *cube) {
     }
     return (
         (lehmer_idx(corner_positions, NUMBER_OF_CORNERS, NUMBER_OF_CORNERS) * ALL_POSSIBLE_CORNER_ORIENTATIONS) +
-        to_base_10(corner_orientations, NUMBER_OF_CORNERS - 1, CORNER_SIDES)
+        to_base_10(corner_orientations, NUMBER_OF_CORNERS - 1, NUMBER_OF_CORNER_SIDES)
     );
 }
 
-uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cubie) {
+uint64_t encode_edges(RubiksCube *cube, EdgePosition start_cubie, EdgePosition end_cubie) {
     int size = end_cubie - start_cubie + 1;
     int edge_positions[size];
     int edge_orientations[size];
 
     for (int i = 0; i < NUMBER_OF_EDGES; i++) {
-        EdgeCubie edge = cube->edge_positions[i];
+        EdgePosition edge = cube->edge_positions[i];
         if (edge >= start_cubie && edge <= end_cubie) {
             edge_positions[edge - start_cubie] = i;
             edge_orientations[edge - start_cubie] = cube->edge_orientations[i];
@@ -103,7 +103,7 @@ uint64_t encode_edges(RubiksCube *cube, EdgeCubie start_cubie, EdgeCubie end_cub
     }
     return (
         (lehmer_idx(edge_positions, size, NUMBER_OF_EDGES) * ALL_POSSIBLE_SEVEN_EDGE_ORIENTATIONS) +
-        to_base_10(edge_orientations, size, EDGE_SIDES)
+        to_base_10(edge_orientations, size, NUMBER_OF_EDGE_SIDES)
     );
 }
 

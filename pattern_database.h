@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "rubiks_cube.h"
+#include "moves.h"
 
 #define NUMBER_OF_BASIC_MOVES 18
 #define POSSIBLE_CORNER_COMBINATIONS 88179840 // 8! * 3^7

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "rubiks_cube.h"
+#include "moves.h"
 
 #define CORNERS_IN_FACE 4
 #define EDGES_IN_FACE 4
@@ -51,7 +52,7 @@ const char *STRING_REPRESENTATION_OF_MOVES[] = {
     "z", "z'", "z2",
 };
 
-const CornerCubie NORMAL_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
+const CornerPosition NORMAL_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {UFL, UFR, UBR, UBL},
     {UFL, UBL, DBL, DFL},
     {UFL, DFL, DFR, UFR},
@@ -60,7 +61,7 @@ const CornerCubie NORMAL_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {DFL, DBL, DBR, DFR}
 };
 
-const EdgeCubie NORMAL_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
+const EdgePosition NORMAL_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
     {UF, UR, UB, UL},
     {UL, BL, DL, FL},
     {UF, FL, DF, FR},
@@ -69,7 +70,7 @@ const EdgeCubie NORMAL_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
     {DF, DL, DB, DR}
 };
 
-const CornerCubie PRIME_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
+const CornerPosition PRIME_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {UFL, UBL, UBR, UFR},
     {UFL, DFL, DBL, UBL},
     {UFL, UFR, DFR, DFL},
@@ -78,7 +79,7 @@ const CornerCubie PRIME_CORNERS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {DFL, DFR, DBR, DBL}
 };
 
-const EdgeCubie PRIME_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
+const EdgePosition PRIME_EDGES[NUMBER_OF_COLORS][EDGES_IN_FACE] = {
     {UF, UL, UB, UR},
     {UL, FL, DL, BL},
     {UF, FR, DF, FL},
@@ -96,7 +97,7 @@ const CornerOrientation TWISTS[NUMBER_OF_COLORS][CORNERS_IN_FACE] = {
     {}
 };
 
-const EdgeCubie MIDDLE_NORMAL_EDGES[NUMBER_OF_MIDDLE_MOVES][EDGES_IN_FACE] = {
+const EdgePosition MIDDLE_NORMAL_EDGES[NUMBER_OF_MIDDLE_MOVES][EDGES_IN_FACE] = {
     {UF, UB, DB, DF},
     {FL, BL, BR, FR},
     {UL, DL, DR, UR}
@@ -108,7 +109,7 @@ const Position MIDDLE_NORMAL_CENTRES[NUMBER_OF_MIDDLE_MOVES][CENTRES_IN_MIDDLE_L
     {UP, LEFT, DOWN, RIGHT}
 };
 
-const EdgeCubie MIDDLE_PRIME_EDGES[NUMBER_OF_MIDDLE_MOVES][EDGES_IN_FACE] = {
+const EdgePosition MIDDLE_PRIME_EDGES[NUMBER_OF_MIDDLE_MOVES][EDGES_IN_FACE] = {
     {UF, DF, DB, UB},
     {FL, FR, BR, BL},
     {UL, UR, DR, DL}
@@ -125,13 +126,13 @@ EdgeOrientation flip_edge(EdgeOrientation orientation) {
 }
 
 CornerOrientation twist_corner(CornerOrientation orientation, CornerOrientation twist) {
-    return (orientation + twist) % CORNER_SIDES;
+    return (orientation + twist) % NUMBER_OF_CORNER_SIDES;
 }
 
 // corners[1] is replaced with corners[2], corners[2] with corners[3], corners[3] with corners[4]
 // and corners[4] with corners[1]
-void cycle_four_corners(RubiksCube *cube, const CornerCubie corners[CORNERS_IN_FACE]) {
-    CornerCubie temp_corner_position;
+void cycle_four_corners(RubiksCube *cube, const CornerPosition corners[CORNERS_IN_FACE]) {
+    CornerPosition temp_corner_position;
     CornerOrientation temp_corner_orientation;
     // As 3 swaps are needed to cycle four corners
     for (int i = 0; i < CORNERS_IN_FACE - 1; i++) {
@@ -145,7 +146,7 @@ void cycle_four_corners(RubiksCube *cube, const CornerCubie corners[CORNERS_IN_F
 }
 
 void cycle_four_corners_with_twists (
-    RubiksCube *cube, const CornerCubie corners[CORNERS_IN_FACE], const CornerOrientation twists[CORNERS_IN_FACE]
+    RubiksCube *cube, const CornerPosition corners[CORNERS_IN_FACE], const CornerOrientation twists[CORNERS_IN_FACE]
 ) {
     cycle_four_corners(cube, corners);
     for (int i = 0; i < CORNERS_IN_FACE; i++) {
@@ -154,8 +155,8 @@ void cycle_four_corners_with_twists (
     }
 }
 
-void cycle_four_edges(RubiksCube *cube, const EdgeCubie edges[EDGES_IN_FACE]) {
-    EdgeCubie temp_edge_position;
+void cycle_four_edges(RubiksCube *cube, const EdgePosition edges[EDGES_IN_FACE]) {
+    EdgePosition temp_edge_position;
     EdgeOrientation temp_edge_orientation;
     for (int i = 0; i < EDGES_IN_FACE - 1; i++) {
         temp_edge_position = cube->edge_positions[edges[i]];
@@ -167,7 +168,7 @@ void cycle_four_edges(RubiksCube *cube, const EdgeCubie edges[EDGES_IN_FACE]) {
     }
 }
 
-void cycle_four_edges_with_flipping(RubiksCube *cube, const EdgeCubie edges[EDGES_IN_FACE]) {
+void cycle_four_edges_with_flipping(RubiksCube *cube, const EdgePosition edges[EDGES_IN_FACE]) {
     cycle_four_edges(cube, edges);
     for (int i = 0; i < EDGES_IN_FACE; i++) {
         cube->edge_orientations[edges[i]] = flip_edge(cube->edge_orientations[edges[i]]);
@@ -175,11 +176,11 @@ void cycle_four_edges_with_flipping(RubiksCube *cube, const EdgeCubie edges[EDGE
 }
 
 void cycle_four_centres(RubiksCube *cube, const Position centres[CENTRES_IN_MIDDLE_LAYER]) {
-    Color temp_centre;
+    Position temp_centre_position;
     for (int i = 0; i < CENTRES_IN_MIDDLE_LAYER - 1; i++) {
-        temp_centre = cube->centres[centres[i]];
-        cube->centres[centres[i]] = cube->centres[centres[i + 1]];
-        cube->centres[centres[i + 1]] = temp_centre;
+        temp_centre_position = cube->centre_positions[centres[i]];
+        cube->centre_positions[centres[i]] = cube->centre_positions[centres[i + 1]];
+        cube->centre_positions[centres[i + 1]] = temp_centre_position;
     }
 }
 
