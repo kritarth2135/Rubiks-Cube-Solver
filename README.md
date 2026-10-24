@@ -2,7 +2,7 @@
 
 This is a Rubiks Cube solver written in C. Currently this solver only has an (not so efficient) implementation of the [Korf's Algorithm](https://www.cs.princeton.edu/courses/archive/fall06/cos402/papers/korfrubik.pdf).
 
-### Project Structure
+## Project Structure
 
 ```
 ├── cube
@@ -26,7 +26,7 @@ This is a Rubiks Cube solver written in C. Currently this solver only has an (no
 └── Makefile
 ```
 
-### Compilation and running
+## Compilation and running
 
 Run below commands to clone the repo, compile and run the program
 
@@ -39,7 +39,7 @@ make
 
 If you rename the executibe in the `Makefile` then replace `rubiks_cube_solver` with the new name.
 
-### CLI interface
+## CLI interface
 
 To make a move enter the [move notations](https://jperm.net/3x3/moves) in any case. Note that only the notation with `w` is accepted for wide moves. This is because the inputs are case insensitive so something like `u` will be treated as `U` rather than `Uw`. All of the 54 moves (18 face moves, 18 wide face moves, 9 middle moves and 9 cube moves) are supported.
 
