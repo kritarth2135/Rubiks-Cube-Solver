@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#include "pattern_database.h"
+#include "db_generation/pattern_database.h"
 
 
 uint8_t * load_corner_db() {

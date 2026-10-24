@@ -3,9 +3,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "pattern_database.h"
-#include "rubiks_cube.h"
-#include "moves.h"
+#include "db_generation/pattern_database.h"
+#include "cube/cube.h"
+#include "cube/moves.h"
+
+// Path to the databases
+#define DB_PATH "db/"
 
 
 // The order of the moves in these two arrays matter as some of the conditions depend on the
@@ -22,10 +25,11 @@ const Move REVERSE_BASIC_MOVES[NUMBER_OF_BASIC_MOVES] = {
     U_TWO, D_TWO, L_TWO, R_TWO, F_TWO, B_TWO
 };
 
-const char *CORNER_DB_NAME = "corner_db.bin";
-const char *FIRST_EDGE_DB_NAME = "first_edge_db.bin";
-const char *SECOND_EDGE_DB_NAME = "second_edge_db.bin";
-const char *EDGE_POSITIONS_DB_NAME = "edge_positions_db.bin";
+
+const char *CORNER_DB_NAME = DB_PATH "corner_db.bin";
+const char *FIRST_EDGE_DB_NAME = DB_PATH "first_edge_db.bin";
+const char *SECOND_EDGE_DB_NAME = DB_PATH "second_edge_db.bin";
+const char *EDGE_POSITIONS_DB_NAME = DB_PATH "edge_positions_db.bin";
 
 const int FOUR_BITS_MASK = 0b1111;
 

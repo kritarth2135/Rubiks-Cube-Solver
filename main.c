@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "rubiks_cube.h"
-#include "moves.h"
-#include "pattern_database.h"
-#include "solver.h"
+#include "cube/cube.h"
+#include "cube/moves.h"
+#include "db_generation/pattern_database.h"
+#include "solver/solver.h"
 
 #define BUFFER_SIZE 50
 

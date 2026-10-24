@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "solver.h"
-#include "rubiks_cube.h"
-#include "pattern_database.h"
+#include "solver/solver.h"
+#include "cube/cube.h"
+#include "db_generation/pattern_database.h"
 
 
 int solve(

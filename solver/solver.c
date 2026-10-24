@@ -1,4 +1,4 @@
-#include "solver.h"
+#include "solver/solver.h"
 
 void insertion_sort(int *value_array, int *key_array, int size) {
     for (int i = 1; i < size; i++) {

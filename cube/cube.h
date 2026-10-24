@@ -1,5 +1,5 @@
-#ifndef RUBIKS_CUBE_H
-#define RUBIKS_CUBE_H
+#ifndef CUBE_H
+#define CUBE_H
 
 
 #define NUMBER_OF_FACES 6

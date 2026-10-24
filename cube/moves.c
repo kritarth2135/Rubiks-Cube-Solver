@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "rubiks_cube.h"
-#include "moves.h"
+#include "cube/cube.h"
+#include "cube/moves.h"
 
 #define CORNERS_IN_FACE 4
 #define EDGES_IN_FACE 4

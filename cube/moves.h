@@ -2,7 +2,7 @@
 #define MOVES_H
 
 
-#include "rubiks_cube.h"
+#include "cube/cube.h"
 
 #define MOVE_STR_LEN 3
 #define NUMBER_OF_MOVES 54

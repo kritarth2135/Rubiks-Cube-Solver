@@ -1,8 +1,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "rubiks_cube.h"
-#include "pattern_database.h"
+#include "cube/cube.h"
+#include "db_generation/pattern_database.h"
 
 #define MAX_SIZE 12
 #define ALL_POSSIBLE_CORNER_ORIENTATIONS 2187  // 3^7

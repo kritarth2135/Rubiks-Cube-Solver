@@ -54,8 +54,12 @@ dkms.conf
 # debug information files
 *.dwo
 
+# vs code stuff
 .vscode
+# the resulting binary name
 rubiks_cube_solver
+# flags for lsp`
+compile_flags.txt
 
-# custom databases
-*.bin
+# databases directory
+db

@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "rubiks_cube.h"
-#include "moves.h"
+#include "cube/cube.h"
+#include "cube/moves.h"
 
 #define NUMBER_OF_BASIC_MOVES 18
 #define POSSIBLE_CORNER_COMBINATIONS 88179840 // 8! * 3^7

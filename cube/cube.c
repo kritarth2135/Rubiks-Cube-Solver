@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "rubiks_cube.h"
+#include "cube/cube.h"
 
 #define FACE_DIMENSION 3
 
@@ -201,9 +201,9 @@ char get_edge_sticker(
  * Using the cubie representation generate all the stickers to print the cube
  */
 void generate_stickers(RubiksCube *cube, char stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION]) {
-    for (int i = 0; i < NUMBER_OF_FACES; i++) {
-
-    }
+//     for (int i = 0; i < NUMBER_OF_FACES; i++) {
+//
+//     }
 
     stickers[UP][0][0] = get_corner_sticker(cube, UBL, CORNER_TOP);
     stickers[UP][0][1] = get_edge_sticker(cube, UB, EDGE_TOP);
