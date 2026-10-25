@@ -6,6 +6,7 @@
 #include "cube/moves.h"
 #include "db_generation/pattern_database.h"
 #include "solver/solver.h"
+#include "ui/ui.h"
 
 #define BUFFER_SIZE 50
 
@@ -122,6 +123,9 @@ int main(void) {
     free(first_edge_db);
     free(second_edge_db);
     free(edge_position_db);
+
+    ui(0);
+
     return 0;
 }
 
