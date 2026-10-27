@@ -13,120 +13,118 @@
 void get_input(char buffer[BUFFER_SIZE]);
 
 int main(void) {
-    RubiksCube *cube = create_rubiks_cube();
-    if (cube == NULL) {
-        return 1;
-    }
+//     RubiksCube *cube = create_rubiks_cube();
+//     if (cube == NULL) {
+//         return 1;
+//     }
+//
+//     // Loading databases
+//     uint8_t *corner_db = load_corner_db();
+//     if (corner_db == NULL) {
+//         return 1;
+//     }
+//     uint8_t *first_edge_db = load_first_edge_db();
+//     if (first_edge_db == NULL) {
+//         return 1;
+//     }
+//     uint8_t *second_edge_db = load_second_edge_db();
+//     if (second_edge_db == NULL) {
+//         return 1;
+//     }
+//     uint8_t *edge_position_db = load_edge_position_db();
+//     if (edge_position_db == NULL) {
+//         return 1;
+//     }
+//     printf("\n");
+//
+//     Move scramble[] = {
+//         R_NORMAL, F_TWO, L_NORMAL, B_TWO, D_NORMAL, U_TWO, R_NORMAL, B_PRIME, R_PRIME, F_NORMAL,
+//         D_NORMAL, B_NORMAL, R_TWO, L_NORMAL, D_PRIME, R_TWO, L_NORMAL
+//     };
+//     int scramble_len = 0;
+//     for (int i = 0; i < scramble_len; i++) {
+//         make_move(cube, scramble[i]);
+//     }
+//
+//     char buffer[BUFFER_SIZE];
+//     print_cube(cube);
+//     print_cube_arrays(cube);
+//     printf(
+//         "[[%lu]%i, [%lu]%i, [%lu]%i, [%lu]%i]\n",
+//         encode_corners(cube),
+//         get_four_bits(corner_db, encode_corners(cube)),
+//         encode_first_seven_edges(cube),
+//         get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
+//         encode_last_seven_edges(cube),
+//         get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
+//         encode_all_edge_positions(cube),
+//         get_four_bits(edge_position_db, encode_all_edge_positions(cube))
+//     );
+//
+//     while (1) {
+//         printf("\nEnter move ('a' to solve, 'q' to exit): ");
+//         get_input(buffer);
+//         if (buffer[0] == 'q' && buffer[1] == '\0') {
+//             break;
+//         }
+//
+//         if (buffer[0] == 'a' && buffer[1] == '\0') {
+//             RubiksCube *copy = copy_cube(cube);
+//             RubiksCube *goal = create_rubiks_cube();
+//
+//             Move solution[SOLVER_MAX_DEPTH];
+//             int solution_len = 0;
+//             if (korfs_solver(copy, goal, corner_db, first_edge_db, second_edge_db, edge_position_db, solution, &solution_len)) {
+//                 printf("Solution: ");
+//                 for (int i = 0; i < solution_len; i++) {
+//                     printf("%s ", STRING_REPRESENTATION_OF_MOVES[solution[i]]);
+//                 }
+//                 printf("\n");
+//                 free(copy);
+//                 free(goal);
+//
+//                 printf("Apply solution? (y/n): ");
+//                 char choice = getchar();
+//                 if (choice == 'y') {
+//                     for (int i = 0; i < solution_len; i++) {
+//                         make_move(cube, solution[i]);
+//                     }
+//                 }
+//             }
+//             else {
+//                 free(copy);
+//                 free(goal);
+//             }
+//
+//             continue;
+//         }
+//
+//         if (parse_and_make_move(cube, buffer) != 0) {
+//             printf("Invalid move!\n");
+//         }
+//         printf("\n");
+//         print_cube(cube);
+//         print_cube_arrays(cube);
+//         printf(
+//             "[[%lu]%i, [%lu]%i, [%lu]%i, [%lu]%i]\n",
+//             encode_corners(cube),
+//             get_four_bits(corner_db, encode_corners(cube)),
+//             encode_first_seven_edges(cube),
+//             get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
+//             encode_last_seven_edges(cube),
+//             get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
+//             encode_all_edge_positions(cube),
+//             get_four_bits(edge_position_db, encode_all_edge_positions(cube))
+//         );
+//     }
+//
+//     free(cube);
+//     free(corner_db);
+//     free(first_edge_db);
+//     free(second_edge_db);
+//     free(edge_position_db);
 
-    // Loading databases
-    uint8_t *corner_db = load_corner_db();
-    if (corner_db == NULL) {
-        return 1;
-    }
-    uint8_t *first_edge_db = load_first_edge_db();
-    if (first_edge_db == NULL) {
-        return 1;
-    }
-    uint8_t *second_edge_db = load_second_edge_db();
-    if (second_edge_db == NULL) {
-        return 1;
-    }
-    uint8_t *edge_position_db = load_edge_position_db();
-    if (edge_position_db == NULL) {
-        return 1;
-    }
-    printf("\n");
-
-    Move scramble[] = {
-        R_NORMAL, F_TWO, L_NORMAL, B_TWO, D_NORMAL, U_TWO, R_NORMAL, B_PRIME, R_PRIME, F_NORMAL,
-        D_NORMAL, B_NORMAL, R_TWO, L_NORMAL, D_PRIME, R_TWO, L_NORMAL
-    };
-    int scramble_len = 0;
-    for (int i = 0; i < scramble_len; i++) {
-        make_move(cube, scramble[i]);
-    }
-
-    char buffer[BUFFER_SIZE];
-    print_cube(cube);
-    print_cube_arrays(cube);
-    printf(
-        "[[%lu]%i, [%lu]%i, [%lu]%i, [%lu]%i]\n",
-        encode_corners(cube),
-        get_four_bits(corner_db, encode_corners(cube)),
-        encode_first_seven_edges(cube),
-        get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
-        encode_last_seven_edges(cube),
-        get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
-        encode_all_edge_positions(cube),
-        get_four_bits(edge_position_db, encode_all_edge_positions(cube))
-    );
-
-    while (1) {
-        printf("\nEnter move ('a' to solve, 'q' to exit): ");
-        get_input(buffer);
-        if (buffer[0] == 'q' && buffer[1] == '\0') {
-            break;
-        }
-
-        if (buffer[0] == 'a' && buffer[1] == '\0') {
-            RubiksCube *copy = copy_cube(cube);
-            RubiksCube *goal = create_rubiks_cube();
-
-            Move solution[SOLVER_MAX_DEPTH];
-            int solution_len = 0;
-            if (korfs_solver(copy, goal, corner_db, first_edge_db, second_edge_db, edge_position_db, solution, &solution_len)) {
-                printf("Solution: ");
-                for (int i = 0; i < solution_len; i++) {
-                    printf("%s ", STRING_REPRESENTATION_OF_MOVES[solution[i]]);
-                }
-                printf("\n");
-                free(copy);
-                free(goal);
-
-                printf("Apply solution? (y/n): ");
-                char choice = getchar();
-                if (choice == 'y') {
-                    for (int i = 0; i < solution_len; i++) {
-                        make_move(cube, solution[i]);
-                    }
-                }
-            }
-            else {
-                free(copy);
-                free(goal);
-            }
-
-            continue;
-        }
-
-        if (parse_and_make_move(cube, buffer) != 0) {
-            printf("Invalid move!\n");
-        }
-        printf("\n");
-        print_cube(cube);
-        print_cube_arrays(cube);
-        printf(
-            "[[%lu]%i, [%lu]%i, [%lu]%i, [%lu]%i]\n",
-            encode_corners(cube),
-            get_four_bits(corner_db, encode_corners(cube)),
-            encode_first_seven_edges(cube),
-            get_four_bits(first_edge_db, encode_first_seven_edges(cube)),
-            encode_last_seven_edges(cube),
-            get_four_bits(second_edge_db, encode_last_seven_edges(cube)),
-            encode_all_edge_positions(cube),
-            get_four_bits(edge_position_db, encode_all_edge_positions(cube))
-        );
-    }
-
-    free(cube);
-    free(corner_db);
-    free(first_edge_db);
-    free(second_edge_db);
-    free(edge_position_db);
-
-    ui(0);
-
-    return 0;
+    return ui();
 }
 
 void get_input(char buffer[BUFFER_SIZE]) {
