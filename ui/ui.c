@@ -21,8 +21,8 @@ int ui() {
     noecho();
     refresh();
 
-    WINDOW *win1 = create_window(60, 100, 0, 0, &row, &col);
-    WINDOW *win2 = create_window(40, 100, row, 0, &row, &col);
+    WINDOW *win1 = create_window(100, 60, 0, 0, &row, &col);
+    WINDOW *win2 = create_window(100, 40, 0, col, &row, &col);
 
     getch();
 
@@ -74,6 +74,17 @@ WINDOW *create_window(
 
     int height = (height_per * row) / 100;
     int width = (width_per * col) / 100;
+
+    // If there is no space for a new window (i.e. less than 3 width/height as after adding border
+    // there will be no space for content), fill the remaining space
+    int x_border_distance = col - (start_col + width);
+    int y_border_distance = row - (start_row + height);
+    if (x_border_distance < 3) {
+        width += x_border_distance;
+    }
+    if (y_border_distance < 3) {
+        height += y_border_distance;
+    }
 
     WINDOW *window = newwin(height, width, start_row, start_col);
     *next_row = height + start_row;
