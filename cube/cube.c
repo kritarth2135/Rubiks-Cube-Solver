@@ -3,7 +3,6 @@
 
 #include "cube/cube.h"
 
-#define FACE_DIMENSION 3
 
 
 typedef enum {
@@ -162,37 +161,40 @@ is_equal(
 
 
 
-char
+Color
 get_corner_sticker(
     RubiksCube *cube,
     CornerPosition cubie,
     CornerStickerPosition position
 ) {
-    return STICKERS[
+    // return STICKERS[
+    return
         cube->face_colors[
             CORNER_CUBIE_STICKER_POSITIONS[
                 cube->corner_positions[cubie]
             ][
                 (position + cube->corner_orientations[cubie]) % NUMBER_OF_CORNER_SIDES
             ]
-        ]
-    ];
+        ];
+    // ];
 }
 
-char get_edge_sticker(
+Color
+get_edge_sticker(
     RubiksCube *cube,
     EdgePosition cubie,
     EdgeStickerPosition position
 ) {
-    return STICKERS[
+    // return STICKERS[
+    return
         cube->face_colors[
             EDGE_CUBIE_STICKER_POSITIONS[
                 cube->edge_positions[cubie]
             ][
                 (position + cube->edge_orientations[cubie]) % NUMBER_OF_EDGE_SIDES
             ]
-        ]
-    ];
+        ];
+    // ];
 }
 
 
@@ -200,7 +202,7 @@ char get_edge_sticker(
 /*
  * Using the cubie representation generate all the stickers to print the cube
  */
-void generate_stickers(RubiksCube *cube, char stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION]) {
+void generate_stickers(RubiksCube *cube, Color stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION]) {
 //     for (int i = 0; i < NUMBER_OF_FACES; i++) {
 //
 //     }
@@ -267,35 +269,35 @@ void generate_stickers(RubiksCube *cube, char stickers[NUMBER_OF_COLORS][FACE_DI
 }
 
 
-void print_cube(RubiksCube *cube) {
-    char stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION];
-    generate_stickers(cube, stickers);
-
-    for (int i = 0; i < FACE_DIMENSION; i++) {
-        printf("      ");
-        for (int j = 0; j < FACE_DIMENSION; j++) {
-            printf("%c ", stickers[UP][i][j]);
-        }
-        printf("\n");
-    }
-
-    for (int j = 0; j < FACE_DIMENSION; j++) {
-        for (int i = LEFT; i < DOWN; i++) {
-            for (int k = 0; k < FACE_DIMENSION; k++) {
-                printf("%c ", stickers[i][j][k]);
-            }
-        }
-        printf("\n");
-    }
-
-    for (int i = 0; i < FACE_DIMENSION; i++) {
-        printf("      ");
-        for (int j = 0; j < FACE_DIMENSION; j++) {
-            printf("%c ", stickers[DOWN][i][j]);
-        }
-        printf("\n");
-    }
-}
+// void print_cube(RubiksCube *cube) {
+//     char stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION];
+//     generate_stickers(cube, stickers);
+//
+//     for (int i = 0; i < FACE_DIMENSION; i++) {
+//         printf("      ");
+//         for (int j = 0; j < FACE_DIMENSION; j++) {
+//             printf("%c ", stickers[UP][i][j]);
+//         }
+//         printf("\n");
+//     }
+//
+//     for (int j = 0; j < FACE_DIMENSION; j++) {
+//         for (int i = LEFT; i < DOWN; i++) {
+//             for (int k = 0; k < FACE_DIMENSION; k++) {
+//                 printf("%c ", stickers[i][j][k]);
+//             }
+//         }
+//         printf("\n");
+//     }
+//
+//     for (int i = 0; i < FACE_DIMENSION; i++) {
+//         printf("      ");
+//         for (int j = 0; j < FACE_DIMENSION; j++) {
+//             printf("%c ", stickers[DOWN][i][j]);
+//         }
+//         printf("\n");
+//     }
+// }
 
 void print_cube_arrays(RubiksCube *cube) {
     printf("centres:             [");
