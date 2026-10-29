@@ -1,6 +1,8 @@
 #ifndef UI_H
 #define UI_H
 
-int ui();
+#include "cube/cube.h"
+
+int ui(RubiksCube *cube, int debug);
 
 #endif

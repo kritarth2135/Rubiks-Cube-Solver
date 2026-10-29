@@ -8,16 +8,17 @@
 #include "solver/solver.h"
 #include "ui/ui.h"
 
+#define DEBUG_FLAG 1
 #define BUFFER_SIZE 50
 
 void get_input(char buffer[BUFFER_SIZE]);
 
 int main(void) {
-//     RubiksCube *cube = create_rubiks_cube();
-//     if (cube == NULL) {
-//         return 1;
-//     }
-//
+    RubiksCube *cube = create_rubiks_cube();
+    if (cube == NULL) {
+        return 1;
+    }
+
 //     // Loading databases
 //     uint8_t *corner_db = load_corner_db();
 //     if (corner_db == NULL) {
@@ -117,14 +118,16 @@ int main(void) {
 //             get_four_bits(edge_position_db, encode_all_edge_positions(cube))
 //         );
 //     }
-//
-//     free(cube);
-//     free(corner_db);
-//     free(first_edge_db);
-//     free(second_edge_db);
-//     free(edge_position_db);
 
-    return ui();
+    int ret_val = ui(cube, DEBUG_FLAG);
+
+    free(cube);
+    // free(corner_db);
+    // free(first_edge_db);
+    // free(second_edge_db);
+    // free(edge_position_db);
+
+    return ret_val;
 }
 
 void get_input(char buffer[BUFFER_SIZE]) {
