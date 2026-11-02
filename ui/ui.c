@@ -13,23 +13,13 @@
 #define FACET_PER 33
 
 
-const int CURSES_COLOR_MAPPING[NUMBER_OF_FACES] = {
-    COLOR_WHITE,
-    COLOR_MAGENTA,
-    COLOR_GREEN,
-    COLOR_RED,
-    COLOR_BLUE,
-    COLOR_YELLOW
-};
-
-
 void draw_border(WINDOW *win);
 WINDOW *create_window(
     int height_per, int width_per, int start_row, int start_col, int *next_row, int *next_col,
     WINDOW *win, bool border
 );
 void destroy_window(WINDOW *win);
-void draw_cube(WINDOW *window, RubiksCube *cube);
+int draw_cube(WINDOW *window, RubiksCube *cube);
 
 
 /*
@@ -43,12 +33,33 @@ int ui(RubiksCube *cube, int debug) {
     raw();
     keypad(stdscr, TRUE);
     noecho();
+
+    if (!has_colors()) {
+        return 1;
+    }
     start_color();
+    use_default_colors();
+
     refresh();
 
+    init_pair(1, COLOR_WHITE, -1);
+    init_pair(2, COLOR_MAGENTA, -1);
+    init_pair(3, COLOR_GREEN, -1);
+    init_pair(4, COLOR_RED, -1);
+    init_pair(5, COLOR_BLUE, -1);
+    init_pair(6, COLOR_YELLOW, -1);
+
     WINDOW *main = create_window(CUBE_WINDOW_HEIGHT_PER, CUBE_WINDOW_WIDTH_PER, 0, 0, &row, &col, stdscr, true);
-    draw_cube(main, cube);
+    if (main == NULL) {
+        return 1;
+    }
+    if (draw_cube(main, cube)) {
+        return 1;
+    }
     WINDOW *help = create_window(HELP_WINDOW_HEIGHT_PER, HELP_WINDOW_WIDTH_PER, row, 0, &row, &col, stdscr, true);
+    if (help == NULL) {
+        return 1;
+    }
 
     do {
         ch = getch();
@@ -59,12 +70,20 @@ int ui(RubiksCube *cube, int debug) {
             refresh();
 
             main = create_window(CUBE_WINDOW_HEIGHT_PER, CUBE_WINDOW_WIDTH_PER, 0, 0, &row, &col, stdscr, true);
-            draw_cube(main, cube);
+            if (main == NULL) {
+                return 1;
+            }
+            if (draw_cube(main, cube)) {
+                return 1;
+            }
             help = create_window(HELP_WINDOW_HEIGHT_PER, HELP_WINDOW_WIDTH_PER, row, 0, &row, &col, stdscr, true);
+            if (help == NULL) {
+                return 1;
+            }
         }
 
-        if (ch == KEY_CTAB) {
-        }
+        // if (ch == '\t') {
+        // }
     } while(ch != 'q');
 
     destroy_window(main);
@@ -130,8 +149,8 @@ WINDOW *create_window(
     // If there is no space for a new window (i.e. less than 3 width/height as after adding border
     // there will be no space for content), fill the remaining space, it will also prevent from
     // overextending a window
-    int x_border_distance = col - (begy + start_col + width);
-    int y_border_distance = row - (begx + start_row + height);
+    int x_border_distance = col - start_col + width;
+    int y_border_distance = row - start_row + height;
     if (x_border_distance < 3 || x_border_distance < 0) {
         width += x_border_distance;
     }
@@ -140,6 +159,9 @@ WINDOW *create_window(
     }
 
     WINDOW *window = newwin(height, width, begy + start_row, begx + start_col);
+    if (window == NULL) {
+        return NULL;
+    }
     *next_row = height + start_row;
     *next_col = width + start_col;
 
@@ -172,7 +194,7 @@ void destroy_window(WINDOW *win) {
  */
 
 
-void draw_cube(WINDOW *window, RubiksCube *cube) {
+int draw_cube(WINDOW *window, RubiksCube *cube) {
     Color stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION];
     generate_stickers(cube, stickers);
     int row, col;
@@ -180,6 +202,9 @@ void draw_cube(WINDOW *window, RubiksCube *cube) {
 
     // This is just to set row and col for
     WINDOW *temp = create_window(FACE_HEIGHT_PER, FACE_WIDTH_PER, 0, 0, &row, &col, window, true);
+    if (temp == NULL) {
+        return 1;
+    }
     destroy_window(temp);
 
     temp_row = row;
@@ -194,13 +219,28 @@ void draw_cube(WINDOW *window, RubiksCube *cube) {
     windows[BACK] = create_window(FACE_HEIGHT_PER, FACE_WIDTH_PER, temp_row, col, &row, &col, window, true);
     windows[DOWN] = create_window(FACE_HEIGHT_PER, FACE_WIDTH_PER, row, temp_col, &row, &col, window, true);
 
-    row = 0;
-    col = 0;
     for (int i = 0; i < NUMBER_OF_FACES; i++) {
-        waddch(windows[i], 'W');
-        wrefresh(windows[i]);
+        if (windows[i] == NULL) {
+            return 1;
+        }
+        row = 0;
+        col = 0;
+        for (int j = 0; j < FACE_DIMENSION; j++) {
+            int curr_row = row;
+            for (int k = 0; k < FACE_DIMENSION; k++) {
+                wattron(windows[i], COLOR_PAIR(stickers[i][j][k] + 1));
+                WINDOW *temp = create_window(FACET_PER, FACET_PER, curr_row, col, &row, &col, windows[i], true);
+                if (temp == NULL) {
+                    return 1;
+                }
+                delwin(temp);
+                wattroff(windows[i], COLOR_PAIR(stickers[i][j][k] + 1));
+            }
+            col = 0;
+        }
         delwin(windows[i]);
     }
 
     wrefresh(window);
+    return 0;
 }
