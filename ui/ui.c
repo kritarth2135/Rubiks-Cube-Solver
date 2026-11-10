@@ -4,6 +4,8 @@
 #include <ncurses.h>
 
 #include "cube/cube.h"
+#include "cube/moves.h"
+#include "solver/solver.h"
 #include "ui.h"
 
 #define CUBE_WINDOW_ROWS 3
@@ -42,11 +44,18 @@ int draw_cube(WINDOW *window, RubiksCube *cube);
  * This function deals with the UI of the program. Takes an integer as an argument to determine
  * if to show debug info or not.
  */
-int ui(RubiksCube *cube, int debug) {
+int ui(
+    RubiksCube *cube, uint8_t *corner_db, uint8_t *first_edge_db, uint8_t *second_edge_db,
+    uint8_t *edge_position_db, Move *solution_array, int *solution_len, int debug
+) {
+    RubiksCube *solved_cube = create_rubiks_cube();
+    if (solved_cube == NULL) {
+        return 1;
+    }
     int ch;
 
     initscr();
-    raw();
+    cbreak();
     keypad(stdscr, TRUE);
     noecho();
 
@@ -63,12 +72,12 @@ int ui(RubiksCube *cube, int debug) {
 
     refresh();
 
-    init_pair(WHITE + 1, COLOR_WHITE, COLOR_WHITE);
-    init_pair(ORANGE + 1, COLOR_MAGENTA, COLOR_MAGENTA);
-    init_pair(GREEN + 1, COLOR_GREEN, COLOR_GREEN);
-    init_pair(RED + 1, COLOR_RED, COLOR_RED);
-    init_pair(BLUE + 1, COLOR_BLUE, COLOR_BLUE);
-    init_pair(YELLOW + 1, COLOR_YELLOW, COLOR_YELLOW);
+    init_pair(WHITE + 1, COLOR_BLACK, COLOR_WHITE);
+    init_pair(ORANGE + 1, COLOR_BLACK, COLOR_MAGENTA);
+    init_pair(GREEN + 1, COLOR_BLACK, COLOR_GREEN);
+    init_pair(RED + 1, COLOR_BLACK, COLOR_RED);
+    init_pair(BLUE + 1, COLOR_BLACK, COLOR_BLUE);
+    init_pair(YELLOW + 1, COLOR_BLACK, COLOR_YELLOW);
 
     WindowGrid *main_grid = allocate_window_grid(2, 1, stdscr);
     if (main_grid == NULL) {
@@ -81,9 +90,13 @@ int ui(RubiksCube *cube, int debug) {
     if (create_windows(main_grid, true)) {
         return 1;
     }
-    if (draw_cube(main_grid->windows[0][0], cube)) {
+    WINDOW *cube_window = main_grid->windows[0][0];
+    WINDOW *info_window = main_grid->windows[1][0];
+
+    if (draw_cube(cube_window, cube)) {
         return 1;
     }
+    wmove(info_window, 1, 1);
 
     do {
         ch = getch();
@@ -95,16 +108,96 @@ int ui(RubiksCube *cube, int debug) {
             if (create_windows(main_grid, true)) {
                 return 1;
             }
-            if (draw_cube(main_grid->windows[0][0], cube)) {
+            if (draw_cube(cube_window, cube)) {
                 return 1;
             }
         }
 
-        // if (ch == '\t') {
-        // }
+        switch(ch) {
+            case 'u':
+                make_move(cube, U_NORMAL);
+                break;
+            case 'd':
+                make_move(cube, D_NORMAL);
+                break;
+            case 'r':
+                make_move(cube, R_NORMAL);
+                break;
+            case 'l':
+                make_move(cube, L_NORMAL);
+                break;
+            case 'f':
+                make_move(cube, F_NORMAL);
+                break;
+            case 'b':
+                make_move(cube, B_NORMAL);
+                break;
+            case 'U':
+                make_move(cube, U_PRIME);
+                break;
+            case 'D':
+                make_move(cube, D_PRIME);
+                break;
+            case 'R':
+                make_move(cube, R_PRIME);
+                break;
+            case 'L':
+                make_move(cube, L_PRIME);
+                break;
+            case 'F':
+                make_move(cube, F_PRIME);
+                break;
+            case 'B':
+                make_move(cube, B_PRIME);
+                break;
+            case 'm':
+                make_move(cube, M_NORMAL);
+                break;
+            case 'e':
+                make_move(cube, E_NORMAL);
+                break;
+            case 's':
+                make_move(cube, S_NORMAL);
+                break;
+            case 'M':
+                make_move(cube, M_PRIME);
+                break;
+            case 'E':
+                make_move(cube, E_PRIME);
+                break;
+            case 'S':
+                make_move(cube, S_PRIME);
+                break;
+        }
+
+        if (ch == 'a') {
+            korfs_solver(cube, solved_cube, corner_db, first_edge_db, second_edge_db, edge_position_db, solution_array, solution_len);
+            wclear(info_window);
+            box(info_window, 0, 0);
+            wmove(info_window, 1, 1);
+            wprintw(info_window, "Solution: ");
+            if (*solution_len == 0) {
+                wprintw(info_window, "Already Solved");
+            }
+            else {
+                for (int i = 0; i < *solution_len; i++) {
+                    make_move(cube, solution_array[i]);
+                    wprintw(info_window, "%s, ", STRING_REPRESENTATION_OF_MOVES[solution_array[i]]);
+                }
+                *solution_len = 0;
+            }
+            wrefresh(info_window);
+        }
+
+        if (draw_cube(cube_window, cube)) {
+            return 1;
+        }
+
+        wmove(info_window, 1, 1);
     } while(ch != 'q');
 
     deallocate_window_grid(main_grid, true);
+    free(solved_cube);
     return endwin();
 }
 
@@ -372,6 +465,7 @@ int draw_cube(WINDOW *window, RubiksCube *cube) {
                         }
                         waddch(curr_win, '\n');
                     }
+                    box(curr_win, 0, 0);
                     wattroff(curr_win, COLOR_PAIR(pair + 1));
                     wrefresh(curr_win);
                 }
