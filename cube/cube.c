@@ -211,7 +211,7 @@ void generate_stickers(RubiksCube *cube, Color stickers[NUMBER_OF_COLORS][FACE_D
     stickers[UP][0][1] = get_edge_sticker(cube, UB, EDGE_TOP);
     stickers[UP][0][2] = get_corner_sticker(cube, UBR, CORNER_TOP);
     stickers[UP][1][0] = get_edge_sticker(cube, UL, EDGE_TOP);
-    stickers[UP][1][1] = STICKERS[cube->centre_positions[UP]];
+    stickers[UP][1][1] = (Color) cube->centre_positions[UP];
     stickers[UP][1][2] = get_edge_sticker(cube, UR, EDGE_TOP);
     stickers[UP][2][0] = get_corner_sticker(cube, UFL, CORNER_TOP);
     stickers[UP][2][1] = get_edge_sticker(cube, UF, EDGE_TOP);
@@ -221,7 +221,7 @@ void generate_stickers(RubiksCube *cube, Color stickers[NUMBER_OF_COLORS][FACE_D
     stickers[LEFT][0][1] = get_edge_sticker(cube, UL, EDGE_DOWN);
     stickers[LEFT][0][2] = get_corner_sticker(cube, UFL, CORNER_LEFT);
     stickers[LEFT][1][0] = get_edge_sticker(cube, BL, EDGE_TOP);
-    stickers[LEFT][1][1] = STICKERS[cube->centre_positions[LEFT]];
+    stickers[LEFT][1][1] = (Color) cube->centre_positions[LEFT];
     stickers[LEFT][1][2] = get_edge_sticker(cube, FL, EDGE_TOP);
     stickers[LEFT][2][0] = get_corner_sticker(cube, DBL, CORNER_LEFT);
     stickers[LEFT][2][1] = get_edge_sticker(cube, DL, EDGE_DOWN);
@@ -231,7 +231,7 @@ void generate_stickers(RubiksCube *cube, Color stickers[NUMBER_OF_COLORS][FACE_D
     stickers[FRONT][0][1] = get_edge_sticker(cube, UF, EDGE_DOWN);
     stickers[FRONT][0][2] = get_corner_sticker(cube, UFR, CORNER_LEFT);
     stickers[FRONT][1][0] = get_edge_sticker(cube, FL, EDGE_DOWN);
-    stickers[FRONT][1][1] = STICKERS[cube->centre_positions[FRONT]];
+    stickers[FRONT][1][1] = (Color) cube->centre_positions[FRONT];
     stickers[FRONT][1][2] = get_edge_sticker(cube, FR, EDGE_DOWN);
     stickers[FRONT][2][0] = get_corner_sticker(cube, DFL, CORNER_LEFT);
     stickers[FRONT][2][1] = get_edge_sticker(cube, DF, EDGE_DOWN);
@@ -241,7 +241,7 @@ void generate_stickers(RubiksCube *cube, Color stickers[NUMBER_OF_COLORS][FACE_D
     stickers[RIGHT][0][1] = get_edge_sticker(cube, UR, EDGE_DOWN);
     stickers[RIGHT][0][2] = get_corner_sticker(cube, UBR, CORNER_LEFT);
     stickers[RIGHT][1][0] = get_edge_sticker(cube, FR, EDGE_TOP);
-    stickers[RIGHT][1][1] = STICKERS[cube->centre_positions[RIGHT]];
+    stickers[RIGHT][1][1] = (Color) cube->centre_positions[RIGHT];
     stickers[RIGHT][1][2] = get_edge_sticker(cube, BR, EDGE_TOP);
     stickers[RIGHT][2][0] = get_corner_sticker(cube, DFR, CORNER_LEFT);
     stickers[RIGHT][2][1] = get_edge_sticker(cube, DR, EDGE_DOWN);
@@ -251,7 +251,7 @@ void generate_stickers(RubiksCube *cube, Color stickers[NUMBER_OF_COLORS][FACE_D
     stickers[BACK][0][1] = get_edge_sticker(cube, UB, EDGE_DOWN);
     stickers[BACK][0][2] = get_corner_sticker(cube, UBL, CORNER_LEFT);
     stickers[BACK][1][0] = get_edge_sticker(cube, BR, EDGE_DOWN);
-    stickers[BACK][1][1] = STICKERS[cube->centre_positions[BACK]];
+    stickers[BACK][1][1] = (Color) cube->centre_positions[BACK];
     stickers[BACK][1][2] = get_edge_sticker(cube, BL, EDGE_DOWN);
     stickers[BACK][2][0] = get_corner_sticker(cube, DBR, CORNER_LEFT);
     stickers[BACK][2][1] = get_edge_sticker(cube, DB, EDGE_DOWN);
@@ -261,7 +261,7 @@ void generate_stickers(RubiksCube *cube, Color stickers[NUMBER_OF_COLORS][FACE_D
     stickers[DOWN][0][1] = get_edge_sticker(cube, DF, EDGE_TOP);
     stickers[DOWN][0][2] = get_corner_sticker(cube, DFR, CORNER_TOP);
     stickers[DOWN][1][0] = get_edge_sticker(cube, DL, EDGE_TOP);
-    stickers[DOWN][1][1] = STICKERS[cube->centre_positions[DOWN]];
+    stickers[DOWN][1][1] = (Color) cube->centre_positions[DOWN];
     stickers[DOWN][1][2] = get_edge_sticker(cube, DR, EDGE_TOP);
     stickers[DOWN][2][0] = get_corner_sticker(cube, DBL, CORNER_TOP);
     stickers[DOWN][2][1] = get_edge_sticker(cube, DB, EDGE_TOP);

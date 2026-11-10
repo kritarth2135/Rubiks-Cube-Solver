@@ -21,6 +21,13 @@ typedef struct WindowGrid {
 } WindowGrid;
 
 
+const Position FACE_MAPPING[CUBE_WINDOW_ROWS][CUBE_WINDOW_COLS] = {
+    {-1, UP, -1, -1},
+    {LEFT, FRONT, RIGHT, BACK},
+    {-1, DOWN, -1, -1}
+};
+
+
 // void draw_border(WINDOW *win);
 WINDOW *create_window(int height, int width, int begy, int begx, bool border);
 void destroy_window(WINDOW *win, bool clear);
@@ -51,6 +58,7 @@ int ui(RubiksCube *cube, int debug) {
 
     if (can_change_color()) {
         init_color(COLOR_MAGENTA, 1000, 647, 0);
+        init_color(COLOR_YELLOW, 1000, 1000, 0);
     }
 
     refresh();
@@ -347,7 +355,29 @@ int draw_cube(WINDOW *window, RubiksCube *cube) {
             if (temp == NULL) {
                 return 1;
             }
-            create_windows(temp, true);
+            create_windows(temp, false);
+
+            for (int k = 0; k < FACE_DIMENSION; k++) {
+                for (int l = 0; l < FACE_DIMENSION; l++) {
+                    WINDOW *curr_win = temp->windows[k][l];
+                    wmove(curr_win, 0, 0);
+
+                    int pair = stickers[FACE_MAPPING[i][j]][k][l];
+                    wattron(curr_win, COLOR_PAIR(pair + 1));
+                    int y, x;
+                    getmaxyx(curr_win, y, x);
+                    for (int m = 0; m < y; m++) {
+                        for (int n = 0; n < x; n++) {
+                            waddch(curr_win, ' ');
+                        }
+                        waddch(curr_win, '\n');
+                    }
+                    wattroff(curr_win, COLOR_PAIR(pair + 1));
+                    wrefresh(curr_win);
+                }
+            }
+
+            deallocate_window_grid(temp, false);
         }
     }
 
