@@ -8,7 +8,7 @@
 #include "solver/solver.h"
 #include "ui/ui.h"
 
-#define DEBUG_FLAG 1
+#define DEBUG_FLAG 0
 #define BUFFER_SIZE 50
 
 void get_input(char buffer[BUFFER_SIZE]);

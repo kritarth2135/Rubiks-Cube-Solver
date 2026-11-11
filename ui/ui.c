@@ -81,19 +81,39 @@ int ui(
     init_pair(BLUE + 1, COLOR_BLACK, COLOR_BLUE);
     init_pair(YELLOW + 1, COLOR_BLACK, COLOR_YELLOW);
 
-    WindowGrid *main_grid = allocate_window_grid(2, 1, stdscr, false);
+    WINDOW *cube_window = NULL;
+    WINDOW *info_window = NULL;
+    WINDOW *debug_window = NULL;
+    WindowGrid *main_grid = NULL;
+    WindowGrid *debug_grid = NULL;
+
+    if (debug) {
+        debug_grid = allocate_window_grid(1, 2, stdscr, false);
+        if (debug_grid == NULL) {
+            return 1;
+        }
+        debug_grid->col_ratio[0] = 3;
+        if (create_windows(debug_grid, false)) {
+            return 1;
+        }
+        debug_window = debug_grid->windows[0][1];
+        box(debug_window, 0, 0);
+        wrefresh(debug_window);
+        main_grid = allocate_window_grid(2, 1, debug_grid->windows[0][0], false);
+    }
+    else {
+        main_grid = allocate_window_grid(2, 1, stdscr, false);
+    }
     if (main_grid == NULL) {
         return 1;
     }
-    main_grid->layout[0][0] = true;
-    main_grid->layout[1][0] = true;
     main_grid->row_ratio[0] = 3;
 
     if (create_windows(main_grid, true)) {
         return 1;
     }
-    WINDOW *cube_window = main_grid->windows[0][0];
-    WINDOW *info_window = main_grid->windows[1][0];
+    cube_window = main_grid->windows[0][0];
+    info_window = main_grid->windows[1][0];
 
     if (draw_cube(cube_window, cube)) {
         return 1;
@@ -106,6 +126,14 @@ int ui(
         if (ch == KEY_RESIZE) {
             destroy_windows(main_grid, true);
             refresh();
+
+            if (debug) {
+                if (create_windows(debug_grid, true)) {
+                    return 1;
+                }
+                box(debug_window, 0, 0);
+                wrefresh(debug_window);
+            }
 
             if (create_windows(main_grid, true)) {
                 return 1;
@@ -128,6 +156,13 @@ int ui(
                 *solution_len = 0;
             }
             wrefresh(info_window);
+        }
+        else if (ch == 'z') {
+            free(cube);
+            cube = create_rubiks_cube();
+            if (cube == NULL) {
+                return 1;
+            }
         }
         else {
             if (ch == 'w') {
@@ -194,6 +229,9 @@ int ui(
         wmove(info_window, 1, 1);
     } while(ch != 'q');
 
+    if (debug) {
+        deallocate_window_grid(debug_grid, true);
+    }
     deallocate_window_grid(main_grid, true);
     free(solved_cube);
     return endwin();
