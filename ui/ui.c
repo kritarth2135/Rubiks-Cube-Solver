@@ -14,6 +14,7 @@
 
 typedef struct WindowGrid {
     WINDOW *parent;
+    bool parent_has_border;
     WINDOW ***windows;
     int rows;
     int *row_ratio;
@@ -33,7 +34,7 @@ const Position FACE_MAPPING[CUBE_WINDOW_ROWS][CUBE_WINDOW_COLS] = {
 // void draw_border(WINDOW *win);
 WINDOW *create_window(int height, int width, int begy, int begx, bool border);
 void destroy_window(WINDOW *win, bool clear);
-WindowGrid *allocate_window_grid(int rows, int cols, WINDOW *parent);
+WindowGrid *allocate_window_grid(int rows, int cols, WINDOW *parent, bool parent_has_border);
 int create_windows(WindowGrid *grid, bool border);
 void destroy_windows(WindowGrid *grid, bool clear);
 void deallocate_window_grid(WindowGrid *grid, bool clear);
@@ -80,7 +81,7 @@ int ui(
     init_pair(BLUE + 1, COLOR_BLACK, COLOR_BLUE);
     init_pair(YELLOW + 1, COLOR_BLACK, COLOR_YELLOW);
 
-    WindowGrid *main_grid = allocate_window_grid(2, 1, stdscr);
+    WindowGrid *main_grid = allocate_window_grid(2, 1, stdscr, false);
     if (main_grid == NULL) {
         return 1;
     }
@@ -107,9 +108,6 @@ int ui(
             refresh();
 
             if (create_windows(main_grid, true)) {
-                return 1;
-            }
-            if (draw_cube(cube_window, cube)) {
                 return 1;
             }
         }
@@ -269,7 +267,7 @@ void destroy_window(WINDOW *win, bool clear) {
  */
 
 
-WindowGrid *allocate_window_grid(int rows, int cols, WINDOW *parent) {
+WindowGrid *allocate_window_grid(int rows, int cols, WINDOW *parent, bool parent_has_border) {
     WindowGrid *grid = malloc(sizeof(WindowGrid));
     if (grid == NULL) {
         return NULL;
@@ -278,6 +276,7 @@ WindowGrid *allocate_window_grid(int rows, int cols, WINDOW *parent) {
     grid->rows = rows;
     grid->cols = cols;
     grid->parent = parent;
+    grid->parent_has_border = parent_has_border;
     grid->windows = NULL;
 
     grid->row_ratio = malloc(sizeof(int) * rows);
@@ -351,7 +350,7 @@ int create_windows(WindowGrid *grid, bool border) {
     getbegyx(grid->parent, beg_row, beg_col);
     getmaxyx(grid->parent, rows, cols);
 
-    if (grid->parent != stdscr) {
+    if (grid->parent_has_border) {
         beg_row += 1;
         beg_col += 1;
         rows -= 2;
@@ -420,7 +419,7 @@ int draw_cube(WINDOW *window, RubiksCube *cube) {
     Color stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION];
     generate_stickers(cube, stickers);
 
-    WindowGrid *grid = allocate_window_grid(CUBE_WINDOW_ROWS, CUBE_WINDOW_COLS, window);
+    WindowGrid *grid = allocate_window_grid(CUBE_WINDOW_ROWS, CUBE_WINDOW_COLS, window, true);
     if (grid == NULL) {
         return 1;
     }
@@ -444,7 +443,7 @@ int draw_cube(WINDOW *window, RubiksCube *cube) {
             if (grid->windows[i][j] == NULL) {
                 continue;
             }
-            WindowGrid *temp = allocate_window_grid(FACE_DIMENSION, FACE_DIMENSION, grid->windows[i][j]);
+            WindowGrid *temp = allocate_window_grid(FACE_DIMENSION, FACE_DIMENSION, grid->windows[i][j], true);
             if (temp == NULL) {
                 return 1;
             }
