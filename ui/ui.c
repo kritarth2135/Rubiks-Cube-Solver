@@ -57,6 +57,7 @@ int ui(
     initscr();
     cbreak();
     keypad(stdscr, TRUE);
+    meta (stdscr, TRUE);
     noecho();
 
     if (!has_colors()) {
@@ -112,65 +113,7 @@ int ui(
                 return 1;
             }
         }
-
-        switch(ch) {
-            case 'u':
-                make_move(cube, U_NORMAL);
-                break;
-            case 'd':
-                make_move(cube, D_NORMAL);
-                break;
-            case 'r':
-                make_move(cube, R_NORMAL);
-                break;
-            case 'l':
-                make_move(cube, L_NORMAL);
-                break;
-            case 'f':
-                make_move(cube, F_NORMAL);
-                break;
-            case 'b':
-                make_move(cube, B_NORMAL);
-                break;
-            case 'U':
-                make_move(cube, U_PRIME);
-                break;
-            case 'D':
-                make_move(cube, D_PRIME);
-                break;
-            case 'R':
-                make_move(cube, R_PRIME);
-                break;
-            case 'L':
-                make_move(cube, L_PRIME);
-                break;
-            case 'F':
-                make_move(cube, F_PRIME);
-                break;
-            case 'B':
-                make_move(cube, B_PRIME);
-                break;
-            case 'm':
-                make_move(cube, M_NORMAL);
-                break;
-            case 'e':
-                make_move(cube, E_NORMAL);
-                break;
-            case 's':
-                make_move(cube, S_NORMAL);
-                break;
-            case 'M':
-                make_move(cube, M_PRIME);
-                break;
-            case 'E':
-                make_move(cube, E_PRIME);
-                break;
-            case 'S':
-                make_move(cube, S_PRIME);
-                break;
-        }
-
-        if (ch == 'a') {
+        else if (ch == 'a') {
             korfs_solver(cube, solved_cube, corner_db, first_edge_db, second_edge_db, edge_position_db, solution_array, solution_len);
             wclear(info_window);
             box(info_window, 0, 0);
@@ -187,6 +130,63 @@ int ui(
                 *solution_len = 0;
             }
             wrefresh(info_window);
+        }
+        else {
+            if (ch == 'w') {
+                int next_ch = getch();
+                switch(next_ch) {
+                    case 'u': make_move(cube, U_WIDE_NORMAL); break;
+                    case 'd': make_move(cube, D_WIDE_NORMAL); break;
+                    case 'r': make_move(cube, R_WIDE_NORMAL); break;
+                    case 'l': make_move(cube, L_WIDE_NORMAL); break;
+                    case 'f': make_move(cube, F_WIDE_NORMAL); break;
+                    case 'b': make_move(cube, B_WIDE_NORMAL); break;
+                }
+            }
+            else if (ch == 'W') {
+                int next_ch = getch();
+                switch(next_ch) {
+                    case 'u': make_move(cube, U_WIDE_PRIME); break;
+                    case 'd': make_move(cube, D_WIDE_PRIME); break;
+                    case 'r': make_move(cube, R_WIDE_PRIME); break;
+                    case 'l': make_move(cube, L_WIDE_PRIME); break;
+                    case 'f': make_move(cube, F_WIDE_PRIME); break;
+                    case 'b': make_move(cube, B_WIDE_PRIME); break;
+                }
+            }
+            else {
+                switch(ch) {
+                    case 'u': make_move(cube, U_NORMAL); break;
+                    case 'd': make_move(cube, D_NORMAL); break;
+                    case 'r': make_move(cube, R_NORMAL); break;
+                    case 'l': make_move(cube, L_NORMAL); break;
+                    case 'f': make_move(cube, F_NORMAL); break;
+                    case 'b': make_move(cube, B_NORMAL); break;
+
+                    case 'U': make_move(cube, U_PRIME); break;
+                    case 'D': make_move(cube, D_PRIME); break;
+                    case 'R': make_move(cube, R_PRIME); break;
+                    case 'L': make_move(cube, L_PRIME); break;
+                    case 'F': make_move(cube, F_PRIME); break;
+                    case 'B': make_move(cube, B_PRIME); break;
+
+                    case 'm': make_move(cube, M_NORMAL); break;
+                    case 'e': make_move(cube, E_NORMAL); break;
+                    case 's': make_move(cube, S_NORMAL); break;
+
+                    case 'M': make_move(cube, M_PRIME); break;
+                    case 'E': make_move(cube, E_PRIME); break;
+                    case 'S': make_move(cube, S_PRIME); break;
+
+                    case 'x': make_move(cube, X_NORMAL); break;
+                    case 'y': make_move(cube, Y_NORMAL); break;
+                    case 'z': make_move(cube, Z_NORMAL); break;
+
+                    case 'X': make_move(cube, X_PRIME); break;
+                    case 'Y': make_move(cube, Y_PRIME); break;
+                    case 'Z': make_move(cube, Z_PRIME); break;
+                }
+            }
         }
 
         if (draw_cube(cube_window, cube)) {
