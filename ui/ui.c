@@ -20,8 +20,13 @@ const Position FACE_MAPPING[CUBE_WINDOW_ROWS][CUBE_WINDOW_COLS] = {
 };
 
 
+WINDOW *info_window = NULL;
+WINDOW *debug_window = NULL;
+
+
 // void draw_border(WINDOW *win);
 int draw_cube(WINDOW *window, RubiksCube *cube);
+void print_string(WINDOW *window, bool append, const char *message);
 
 
 /*
@@ -32,6 +37,8 @@ int ui(
     RubiksCube *cube, uint8_t *corner_db, uint8_t *first_edge_db, uint8_t *second_edge_db,
     uint8_t *edge_position_db, Move *solution_array, int *solution_len, int debug
 ) {
+    char message[MAX_MESSAGE_LEN];
+
     RubiksCube *solved_cube = create_rubiks_cube();
     if (solved_cube == NULL) {
         return 1;
@@ -65,8 +72,6 @@ int ui(
     init_pair(YELLOW + 1, COLOR_BLACK, COLOR_YELLOW);
 
     WINDOW *cube_window = NULL;
-    WINDOW *info_window = NULL;
-    WINDOW *debug_window = NULL;
     WindowGrid *main_grid = NULL;
     WindowGrid *debug_grid = NULL;
 
@@ -124,21 +129,18 @@ int ui(
         }
         else if (ch == 'a') {
             korfs_solver(cube, solved_cube, corner_db, first_edge_db, second_edge_db, edge_position_db, solution_array, solution_len);
-            wclear(info_window);
-            box(info_window, 0, 0);
-            wmove(info_window, 1, 1);
-            wprintw(info_window, "Solution: ");
+            info_print("Solution: ", false);
             if (*solution_len == 0) {
-                wprintw(info_window, "Already Solved");
+                info_print("Already Solved!", true);
             }
             else {
                 for (int i = 0; i < *solution_len; i++) {
                     make_move(cube, solution_array[i]);
-                    wprintw(info_window, "%s, ", STRING_REPRESENTATION_OF_MOVES[solution_array[i]]);
+                    snprintf(message, MAX_MESSAGE_LEN, "%s, ", STRING_REPRESENTATION_OF_MOVES[solution_array[i]]);
+                    info_print(message, true);
                 }
                 *solution_len = 0;
             }
-            wrefresh(info_window);
         }
         else if (ch == 'z') {
             free(cube);
@@ -309,4 +311,51 @@ int draw_cube(WINDOW *window, RubiksCube *cube) {
     deallocate_window_grid(grid, false);
 
     return 0;
+}
+
+
+void print_string(WINDOW *window, bool append, const char *message) {
+    int y, x;
+    if (append) {
+        getyx(info_window, y, x);
+    }
+    else {
+        wclear(window);
+        box(window, 0, 0);
+        y = 1;
+        x = 1;
+    }
+
+    wmove(window, y, x);
+    int max_y, max_x;
+    getmaxyx(window, max_y, max_x);
+
+    // borders
+    max_y -= 2;
+    max_x -= 2;
+
+    char ch;
+    while ((ch = *message++)) {
+        if (max_x - x < 0) {
+            x = 1;
+            y++;
+            if (max_y - y < 0) {
+                wrefresh(window);
+                return;
+            }
+        }
+        mvwaddch(window, y, x, ch);
+        x++;
+    }
+    wrefresh(window);
+}
+
+
+void info_print(const char *message, bool append) {
+    print_string(info_window, append, message);
+}
+
+
+void debug_print(const char *message, bool append) {
+    print_string(debug_window, append, message);
 }
