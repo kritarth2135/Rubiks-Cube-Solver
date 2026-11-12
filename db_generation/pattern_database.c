@@ -151,26 +151,26 @@ int create_and_store_db(
     int previous_move_indexes[max_depth];
     long long unsigned no_of_nodes_processed = 0;
 
-    clock_t begin, end;
-    begin = clock();
+    // clock_t begin, end;
+    // begin = clock();
     if (
         create_db(
             db, cube, &depth, max_depth, possible_combinations, &no_of_nodes_processed,
             previous_move_indexes, indexing_function
         ) == 1
     ) {
-        printf("\n%s creation failed as the function tried to write at an invalid index.\n", db_name);
+        // printf("\n%s creation failed as the function tried to write at an invalid index.\n", db_name);
         free(cube);
         free(db);
         return 1;
     }
-    end = clock();
+    // end = clock();
     RubiksCube *new_cube = create_rubiks_cube();
     if (new_cube == NULL) {
         return 1;
     }
     if (!is_equal(cube, new_cube)) {
-        printf("\n%s creation failed as the used cube is NOT in the same state as it was before starting to create the database.\n", db_name);
+        // printf("\n%s creation failed as the used cube is NOT in the same state as it was before starting to create the database.\n", db_name);
         free(cube);
         free(db);
         free(new_cube);
@@ -182,13 +182,13 @@ int create_and_store_db(
         free(new_cube);
         return 1;
     }
-    printf(
-        "\nSuccessfully created %s in %f seconds. (Processed %llu nodes at depth %i)\n",
-        db_name,
-        (double)(end - begin) / CLOCKS_PER_SEC,
-        no_of_nodes_processed,
-        max_depth
-    );
+    // printf(
+    //     "\nSuccessfully created %s in %f seconds. (Processed %llu nodes at depth %i)\n",
+    //     db_name,
+    //     (double)(end - begin) / CLOCKS_PER_SEC,
+    //     no_of_nodes_processed,
+    //     max_depth
+    // );
     free(db);
     free(cube);
     free(new_cube);
@@ -201,7 +201,7 @@ uint8_t * load_db(
 ) {
     FILE * file = fopen(db_name, "rb");
     if (file == NULL) {
-        printf("%s not found, creating it... \n", db_name);
+        // printf("%s not found, creating it... \n", db_name);
         if (
             create_and_store_db(db_name, max_depth, possible_combinations, indexing_function) == 1
         ) {
@@ -217,15 +217,15 @@ uint8_t * load_db(
     if (db == NULL) {
         return NULL;
     }
-    clock_t begin, end;
-    begin = clock();
+    // clock_t begin, end;
+    // begin = clock();
     if (fread(db, sizeof(uint8_t), size, file) != size) {
         fclose(file);
         free(db);
         return NULL;
     }
-    end = clock();
-    printf("Loaded %s in %f seconds.\n", db_name, (double)(end - begin) / CLOCKS_PER_SEC);
+    // end = clock();
+    // printf("Loaded %s in %f seconds.\n", db_name, (double)(end - begin) / CLOCKS_PER_SEC);
 
     fclose(file);
     return db;

@@ -1,8 +1,8 @@
 CC = clang
 CFLAGS = -Wall -Werror -std=c23 -g -I.
-LIBS =
+LIBS = -lncurses
 
-DIRS = cube solver db_generation korfs_solver
+DIRS = cube solver db_generation korfs_solver ui
 SRCS = main.c $(wildcard $(foreach dir, $(DIRS), $(dir)/*.c))
 HDRS = $(wildcard $(foreach dir, $(DIRS), $(dir)/*.h))
 EXECUTIBLE = rubiks_cube_solver

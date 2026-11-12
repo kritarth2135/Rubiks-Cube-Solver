@@ -1,6 +1,4 @@
-#include <ctype.h>
 #include <stdbool.h>
-#include <string.h>
 
 #include "cube/cube.h"
 #include "cube/moves.h"
@@ -442,102 +440,105 @@ void make_move(RubiksCube*cube, Move move) {
     }
 }
 
-int parse_and_make_move(RubiksCube* cube, const char *move_str) {
-    int len = strlen(move_str);
-    if (len == 0 || len > MOVE_STR_LEN) {
-        return 1;
-    }
-
-    char base_move_str = toupper(move_str[0]);
-    int base_move;
-
-    if ((base_move = get_face_move(base_move_str)) != -1) {
-        if (len == 1) {
-            normal_face_move(cube, base_move);
-        }
-        else if (len >= 2) {
-            char move_type = move_str[1];
-            bool is_wide = false;
-            if (move_type == 'w' || move_type == 'W') {
-                if (len != 3) {
-                    wide_face_move(cube, base_move);
-                    return 0;
-                }
-                else {
-                    is_wide = true;
-                    move_type = move_str[2];
-                }
-            }
-            if (is_wide == false && len == 3) {
-                return 1;
-            }
-
-            if (move_type == '\'') {
-                if (is_wide) {
-                    wide_prime_face_move(cube, base_move);
-                }
-                else {
-                    prime_face_move(cube, base_move);
-                }
-            }
-            else if (move_type == '2') {
-                if (is_wide) {
-                    double_wide_face_move(cube, base_move);
-                }
-                else {
-                    double_face_move(cube, base_move);
-                }
-            }
-            else {
-                return 1;
-            }
-        }
-        else {
-            return 1;
-        }
-    }
-    else if ((base_move = get_middle_move(base_move_str)) != -1) {
-        if (len == 1) {
-            normal_middle_move(cube, base_move);
-        }
-        else if (len == 2) {
-            char move_type = move_str[1];
-            if (move_type == '\'') {
-                prime_middle_move(cube, base_move);
-            }
-            else if (move_type == '2') {
-                double_middle_move(cube, base_move);
-            }
-            else {
-                return 1;
-            }
-        }
-        else {
-            return 1;
-        }
-    }
-    else if ((base_move = get_cube_move(base_move_str)) != -1) {
-        if (len == 1) {
-            normal_cube_move(cube, base_move);
-        }
-        else if (len == 2) {
-            char move_type = move_str[1];
-            if (move_type == '\'') {
-                prime_cube_move(cube, base_move);
-            }
-            else if (move_type == '2') {
-                double_cube_move(cube, base_move);
-            }
-            else {
-                return 1;
-            }
-        }
-        else {
-            return 1;
-        }
-    }
-    else {
-        return 1;
-    }
-    return 0;
-}
+/*
+ * Deprecated, was previously used in CLI
+ */
+// int parse_and_make_move(RubiksCube* cube, const char *move_str) {
+//     int len = strlen(move_str);
+//     if (len == 0 || len > MOVE_STR_LEN) {
+//         return 1;
+//     }
+//
+//     char base_move_str = toupper(move_str[0]);
+//     int base_move;
+//
+//     if ((base_move = get_face_move(base_move_str)) != -1) {
+//         if (len == 1) {
+//             normal_face_move(cube, base_move);
+//         }
+//         else if (len >= 2) {
+//             char move_type = move_str[1];
+//             bool is_wide = false;
+//             if (move_type == 'w' || move_type == 'W') {
+//                 if (len != 3) {
+//                     wide_face_move(cube, base_move);
+//                     return 0;
+//                 }
+//                 else {
+//                     is_wide = true;
+//                     move_type = move_str[2];
+//                 }
+//             }
+//             if (is_wide == false && len == 3) {
+//                 return 1;
+//             }
+//
+//             if (move_type == '\'') {
+//                 if (is_wide) {
+//                     wide_prime_face_move(cube, base_move);
+//                 }
+//                 else {
+//                     prime_face_move(cube, base_move);
+//                 }
+//             }
+//             else if (move_type == '2') {
+//                 if (is_wide) {
+//                     double_wide_face_move(cube, base_move);
+//                 }
+//                 else {
+//                     double_face_move(cube, base_move);
+//                 }
+//             }
+//             else {
+//                 return 1;
+//             }
+//         }
+//         else {
+//             return 1;
+//         }
+//     }
+//     else if ((base_move = get_middle_move(base_move_str)) != -1) {
+//         if (len == 1) {
+//             normal_middle_move(cube, base_move);
+//         }
+//         else if (len == 2) {
+//             char move_type = move_str[1];
+//             if (move_type == '\'') {
+//                 prime_middle_move(cube, base_move);
+//             }
+//             else if (move_type == '2') {
+//                 double_middle_move(cube, base_move);
+//             }
+//             else {
+//                 return 1;
+//             }
+//         }
+//         else {
+//             return 1;
+//         }
+//     }
+//     else if ((base_move = get_cube_move(base_move_str)) != -1) {
+//         if (len == 1) {
+//             normal_cube_move(cube, base_move);
+//         }
+//         else if (len == 2) {
+//             char move_type = move_str[1];
+//             if (move_type == '\'') {
+//                 prime_cube_move(cube, base_move);
+//             }
+//             else if (move_type == '2') {
+//                 double_cube_move(cube, base_move);
+//             }
+//             else {
+//                 return 1;
+//             }
+//         }
+//         else {
+//             return 1;
+//         }
+//     }
+//     else {
+//         return 1;
+//     }
+//     return 0;
+// }

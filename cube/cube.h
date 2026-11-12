@@ -6,6 +6,7 @@
 #define NUMBER_OF_COLORS 6
 #define NUMBER_OF_CORNERS 8
 #define NUMBER_OF_EDGES 12
+#define FACE_DIMENSION 3
 
 #define NUMBER_OF_CORNER_SIDES 3
 #define NUMBER_OF_EDGE_SIDES 2
@@ -67,7 +68,8 @@ RubiksCube * create_rubiks_cube(void);
 RubiksCube * copy_cube(RubiksCube *cube);
 int is_equal(RubiksCube *cube1, RubiksCube *cube2);
 
-void print_cube(RubiksCube *cube);
+void generate_stickers(RubiksCube *cube, Color stickers[NUMBER_OF_COLORS][FACE_DIMENSION][FACE_DIMENSION]);
+// void print_cube(RubiksCube *cube);
 void print_cube_arrays(RubiksCube *cube);
 
 

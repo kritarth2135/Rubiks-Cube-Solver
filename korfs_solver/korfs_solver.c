@@ -69,10 +69,10 @@ int solve(
     if (*depth < max_depth) {
         (*depth)++;
         for (int i = 0; i < NUMBER_OF_BASIC_MOVES; i++) {
-            if (*depth == 1) {
-                printf("#");
-                fflush(stdout);
-            }
+            // if (*depth == 1) {
+            //     printf("#");
+            //     fflush(stdout);
+            // }
 
             prev_moves_indexes[*depth - 1] = indexes[i];
             if (heuristic[i] == MAX_MOVES_TO_SOLVE_CUBE) {
@@ -111,8 +111,13 @@ int korfs_solver(
     RubiksCube *cube, RubiksCube *goal_state, uint8_t *corner_db, uint8_t *first_edge_db,
     uint8_t *second_edge_db, uint8_t *edge_position_db, Move *solution_array, int *solution_len
 ) {
+    cube = copy_cube(cube);
+    if (cube == NULL) {
+        return 1;
+    }
+
     if (is_equal(cube, goal_state)) {
-        printf("Cube is already solved.\n");
+        // printf("Cube is already solved.\n");
         return 1;
     }
 
@@ -126,10 +131,10 @@ int korfs_solver(
         return 0;
     }
 
-    clock_t begin, end;
-    begin = clock();
+    // clock_t begin, end;
+    // begin = clock();
     for (int i = 0; i < SOLVER_MAX_DEPTH; i++) {
-        printf("\nTrying to find solution at depth: %i\n", i + 1);
+        // printf("\nTrying to find solution at depth: %i\n", i + 1);
         if (
             solve(
                 cube, goal_state, corner_db, edge_position_db, first_edge_db, second_edge_db,
@@ -140,36 +145,36 @@ int korfs_solver(
             break;
         }
     }
-    end = clock();
+    // end = clock();
 
     if (found_solution) {
         if (!is_equal(cube, goal_state)) {
-            printf("\nSolver failed as the cube is in inconsistent state after finding the solution.\n");
+            // printf("\nSolver failed as the cube is in inconsistent state after finding the solution.\n");
             return 0;
         }
         for (int i = 0; i < depth; i++) {
             solution_array[i] = BASIC_MOVES[prev_moves_indexes[i]];
         }
         *solution_len = depth;
-        printf(
-            "\nSolution of lenght %i found in %f seconds. (Processed %llu nodes)\n",
-            depth,
-            (double)(end - begin) / CLOCKS_PER_SEC,
-            no_of_nodes_processed
-        );
+        // printf(
+        //     "\nSolution of lenght %i found in %f seconds. (Processed %llu nodes)\n",
+        //     depth,
+        //     (double)(end - begin) / CLOCKS_PER_SEC,
+        //     no_of_nodes_processed
+        // );
         free(original_state);
         return 1;
     }
     else {
         if (!is_equal(cube, original_state)) {
-            printf("\nSolver failed as the cube is in inconsistent state after running the solver.\n");
+            // printf("\nSolver failed as the cube is in inconsistent state after running the solver.\n");
             return 0;
         }
-        printf(
-            "\nUnable to find solution. (Processed %llu nodes in %f seconds)\n",
-            no_of_nodes_processed,
-            (double)(end - begin) / CLOCKS_PER_SEC
-        );
+        // printf(
+        //     "\nUnable to find solution. (Processed %llu nodes in %f seconds)\n",
+        //     no_of_nodes_processed,
+        //     (double)(end - begin) / CLOCKS_PER_SEC
+        // );
         free(original_state);
         return 0;
     }
